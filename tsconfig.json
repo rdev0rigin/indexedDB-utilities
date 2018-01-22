@@ -1,0 +1,24 @@
+{
+  "compilerOptions": {
+    "strict": false,
+    "target": "es5",
+    "module": "esnext",
+    "outDir": "dist",
+    "rootDir": "./src",
+    "sourceMap": true,
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "moduleResolution": "node",
+    "typeRoots": [
+      "node_modules/@types"
+    ],
+    "lib": ["es5", "es2017", "es2015", "esnext", "dom"]
+  },
+  "include": [
+    "src"
+  ],
+  "exclude": [
+    "node_modules",
+    "dist"
+  ]
+}
