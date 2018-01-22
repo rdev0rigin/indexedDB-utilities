@@ -1,5 +1,5 @@
 {
-  "name": "indexdb-utilities",
+  "name": "indexed-db-utilities",
   "version": "0.0.1",
   "description": "Helper methods and utilities for creating managing values dynamically for the browser IndexDB API.",
   "main": "bundle/bundle.js",
@@ -15,7 +15,7 @@
     "indexDB",
     "rdev"
   ],
-  "author": "Rob \"Rex\" Beatie (rdev116@outlook.com)",
+  "author": "Rob \"Rex\" Beatie (rdev1163@outlook.com)",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/rdev0rigin/indexDB-utilities/issues"

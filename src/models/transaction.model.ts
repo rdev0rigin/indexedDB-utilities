@@ -1,5 +1,7 @@
-export interface TransactionModel {
-	add: (storeName: string, value: any) => void;
-	remove: (storeName: string, value: any) => void;
-	get: (storeName: string, key: string) => any;
+export interface IDBUtility {
+	add: (storeName: string, value: any) => Promise<string | {}>;
+	remove: (storeName: string, value: any) => Promise<any>;
+	get: (storeName: string, key: string) => Promise<any>;
+	put: (storeName: string, value: any) => Promise<string | {}>;
+	update: (storeName: string, key: string, value: any) => Promise<string | {}>;
 }
