@@ -9,7 +9,7 @@ var nodeModules = fs.readdirSync('node_modules')
 	});
 
 
-var appconfig = {
+var appConfig = {
 	entry: [
 		'./src/index'
 	],
@@ -74,4 +74,4 @@ var defaultConfig = {
 
 };
 
-module.exports = webpackMerge(defaultConfig, appconfig);
+module.exports = webpackMerge(defaultConfig, appConfig);
