@@ -5,6 +5,7 @@
   "main": "bundle/bundle.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "webpack --config webpack.config.js",
     "demo": "webpack --config webpack.demo.config.js --watch",
     "docs": "typedoc ./src/index.ts --out ./docs/"
   },

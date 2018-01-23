@@ -1,11 +1,3 @@
-var __assign = (this && this.__assign) || Object.assign || function(t) {
-    for (var s, i = 1, n = arguments.length; i < n; i++) {
-        s = arguments[i];
-        for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
-            t[p] = s[p];
-    }
-    return t;
-};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     return new (P || (P = Promise))(function (resolve, reject) {
         function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
@@ -51,17 +43,26 @@ export function openIDB(config) {
             return [2 /*return*/, new Promise(function (resolve, reject) {
                     var request = indexedDB.open(config.dbName, config.version);
                     request.onerror = function (evt) {
-                        reject(evt.target.errorCode);
+                        reject(request.result);
                     };
                     request.onupgradeneeded = function (evt) {
-                        console.log('onupgradeneeded fired', evt);
                         var nextDb = evt.target.result;
-                        config.storeNames
-                            .forEach(function (storeName) {
-                            nextDb.createObjectStore(storeName, {
-                                keyPath: 'dBKey'
+                        if (config.keyPath) {
+                            config.storeNames
+                                .forEach(function (storeName) {
+                                nextDb.createObjectStore(storeName, {
+                                    keyPath: config.keyPath
+                                });
                             });
-                        });
+                        }
+                        else {
+                            config.storeNames
+                                .forEach(function (storeName) {
+                                nextDb.createObjectStore(storeName, {
+                                    autoIncrement: true
+                                });
+                            });
+                        }
                     };
                     request.onsuccess = function (evt) {
                         var db = request.result;
@@ -71,7 +72,7 @@ export function openIDB(config) {
                                     return __generator(this, function (_a) {
                                         return [2 /*return*/, new Promise(function (res, rej) {
                                                 var request = db.transaction([storeName], 'readwrite')
-                                                    .objectStore(storeName)
+                                                    .objectStore("" + storeName)
                                                     .add(value);
                                                 request.onsuccess = function (evt) {
                                                     res(request.result);
@@ -104,7 +105,7 @@ export function openIDB(config) {
                                 return __awaiter(this, void 0, void 0, function () {
                                     return __generator(this, function (_a) {
                                         return [2 /*return*/, new Promise(function (res, rej) {
-                                                var transaction = db.transaction([storeName]);
+                                                var transaction = db.transaction([storeName], 'readwrite');
                                                 var getRequest = transaction
                                                     .objectStore(storeName)
                                                     .get(key);
@@ -112,12 +113,13 @@ export function openIDB(config) {
                                                     rej(request.result);
                                                 };
                                                 getRequest.onsuccess = function () {
-                                                    var updatedValue = __assign({}, getRequest.result, value);
-                                                    var delRequest = transaction([storeName])
+                                                    var currentValue = getRequest.result;
+                                                    var updatedValue = mergeDeep(currentValue, value);
+                                                    var delRequest = transaction
                                                         .objectStore(storeName)
                                                         .delete(key);
                                                     delRequest.onsuccess = function () {
-                                                        var addRequest = transaction([storeName])
+                                                        var addRequest = transaction
                                                             .objectStore(storeName)
                                                             .add(updatedValue);
                                                         addRequest.onsuccess = function () {
@@ -129,15 +131,15 @@ export function openIDB(config) {
                                     });
                                 });
                             },
-                            remove: function (storeName, key) {
+                            remove: function (storeName, keyValue) {
                                 return __awaiter(this, void 0, void 0, function () {
                                     return __generator(this, function (_a) {
                                         return [2 /*return*/, new Promise(function (res, rej) {
                                                 var delRequest = db.transaction([storeName], 'readwrite')
                                                     .objectStore(storeName)
-                                                    .delete(key);
+                                                    .delete(keyValue);
                                                 delRequest.onsuccess = function () {
-                                                    resolve(delRequest.result);
+                                                    res(delRequest.result);
                                                 };
                                                 delRequest.onerror = function () {
                                                     rej(delRequest.result);
@@ -156,7 +158,7 @@ export function openIDB(config) {
                                                 request.onsuccess = function () {
                                                     res(request.result);
                                                 };
-                                                request.onerror.onerror = function () {
+                                                request.onerror = function () {
                                                     rej(request.result);
                                                 };
                                             })];
@@ -169,5 +171,28 @@ export function openIDB(config) {
         });
     });
 }
-export default openIDB;
+// https://stackoverflow.com/a/48275932/7473184
+function mergeDeep(target, source) {
+    if (typeof target == "object" && typeof source == "object") {
+        for (var key in source) {
+            if (source[key] === null && (target[key] === undefined || target[key] === null)) {
+                target[key] = null;
+            }
+            else if (source[key] instanceof Array) {
+                if (!target[key])
+                    target[key] = [];
+                target[key] = target[key].concat(source[key]);
+            }
+            else if (typeof source[key] == "object") {
+                if (!target[key])
+                    target[key] = {};
+                this.mergeDeep(target[key], source[key]);
+            }
+            else {
+                target[key] = source[key];
+            }
+        }
+    }
+    return target;
+}
 //# sourceMappingURL=index-db.utility.js.map
