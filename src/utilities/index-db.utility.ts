@@ -1,5 +1,5 @@
-import {IDBUConfigModel} from '../models/config.model';
-import {IDBUtility} from '../models/transaction.model';
+import { IDBUConfigModel } from '../models/config.model';
+import { IDBUtility } from '../models/idb-utility.model';
 
 export async function openIDB(config: IDBUConfigModel): Promise<IDBUtility> {
 	if (!window.indexedDB) {
@@ -7,17 +7,13 @@ export async function openIDB(config: IDBUConfigModel): Promise<IDBUtility> {
 		return void 0;
 	}
 	return new Promise<IDBUtility>((resolve, reject) => {
-		console.log('opening DB', config);
 		const request = indexedDB.open(config.dbName, config.version);
 		request.onerror = (evt: ErrorEvent | any) => {
-			console.log('opening error');
 			reject(request.result);
 		};
 		request.onupgradeneeded = (evt: IDBVersionChangeEvent | any): void => {
-			console.log('onupgradeneeded fired', evt);
 			const nextDb = evt.target.result;
 			if(config.keyPath){
-				console.log('hit key path');
 				config.storeNames
 					.forEach((storeName: string) => {
 						nextDb.createObjectStore(
@@ -28,7 +24,6 @@ export async function openIDB(config: IDBUConfigModel): Promise<IDBUtility> {
 						);
 					});
 			} else {
-				console.log('No hit key path');
 				config.storeNames
 					.forEach((storeName: string) => {
 						nextDb.createObjectStore(
@@ -45,7 +40,6 @@ export async function openIDB(config: IDBUConfigModel): Promise<IDBUtility> {
 			resolve({
 				async add(storeName: string, value: {}): Promise<string | {}> {
 					return new Promise((res, rej) => {
-						console.log('calling add', storeName, value);
 						const request = db.transaction([storeName], 'readwrite')
 							.objectStore(`${storeName}`)
 							.add(value);
@@ -70,7 +64,7 @@ export async function openIDB(config: IDBUConfigModel): Promise<IDBUtility> {
 						};
 					});
 				},
-				async update(storeName: string, key: string, value: {}): Promise<string | {}> {
+				async update(storeName: string, key: string, value: ({} | any[])): Promise<string | {}> {
 					return new Promise((res, rej) => {
 						const transaction = db.transaction([storeName], 'readwrite');
 						const getRequest = transaction
@@ -80,7 +74,8 @@ export async function openIDB(config: IDBUConfigModel): Promise<IDBUtility> {
 							rej(request.result);
 						};
 						getRequest.onsuccess = () => {
-							const updatedValue = {...getRequest.result, ...value};
+							const currentValue = getRequest.result;
+							const updatedValue = mergeDeep(currentValue, value);
 							const delRequest = transaction
 								.objectStore(storeName)
 								.delete(key);
@@ -95,13 +90,13 @@ export async function openIDB(config: IDBUConfigModel): Promise<IDBUtility> {
 						};
 					});
 				},
-				async remove(storeName: string, key: string): Promise<{}> {
+				async remove(storeName: string, keyValue: string): Promise<any> {
 					return new Promise((res, rej) => {
 						const delRequest = db.transaction([storeName], 'readwrite')
 							.objectStore(storeName)
-							.delete(key);
+							.delete(keyValue);
 						delRequest.onsuccess = () => {
-							resolve(delRequest.result);
+							res(delRequest.result);
 						};
 						delRequest.onerror = () => {
 							rej(delRequest.result);
@@ -124,4 +119,24 @@ export async function openIDB(config: IDBUConfigModel): Promise<IDBUtility> {
 			});
 		};
 	});
+}
+
+// https://stackoverflow.com/a/48275932/7473184
+function mergeDeep (target, source)  {
+	if (typeof target == "object" && typeof source == "object") {
+		for (const key in source) {
+			if (source[key] === null && (target[key] === undefined || target[key] === null)) {
+				target[key] = null;
+			} else if (source[key] instanceof Array) {
+				if (!target[key]) target[key] = [];
+				target[key] = target[key].concat(source[key]);
+			} else if (typeof source[key] == "object") {
+				if (!target[key]) target[key] = {};
+				this.mergeDeep(target[key], source[key]);
+			} else {
+				target[key] = source[key];
+			}
+		}
+	}
+	return target;
 }

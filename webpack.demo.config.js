@@ -42,16 +42,17 @@ var backendConfig = {
 		// })
 	],
 	module: {
-		loaders: [
+		rules: [
 			{
-				test: /\.ts$/,
-				loaders: [
-					'awesome-typescript-loader'
-				]
+				test: /\.tsx?$/,
+				use: 'ts-loader',
+				exclude: /node_modules/
 			}
 		]
-	}
-
+	},
+	resolve: {
+		extensions: [ '.tsx', '.ts', '.js' ]
+	},
 };
 
 var defaultConfig = {

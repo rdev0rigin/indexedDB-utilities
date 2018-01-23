@@ -5,7 +5,8 @@
   "main": "bundle/bundle.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "demo": "webpack --config webpack.demo.config.js --watch & http-server"
+    "demo": "webpack --config webpack.demo.config.js --watch",
+    "docs": "typedoc ./src/index.ts --out ./docs/"
   },
   "repository": {
     "type": "git",
@@ -23,10 +24,14 @@
   },
   "homepage": "https://github.com/rdev0rigin/indexDB-utilities#readme",
   "devDependencies": {
+    "@types/lodash": "^4.14.94",
+    "@types/node": "9.3.0",
+    "tslint": "5.9.1",
+    "tslint-loader": "3.5.3",
     "awesome-typescript-loader": "^3.4.1",
+    "ts-loader": "^3.3.1",
     "typescript": "^2.6.2",
-    "webpack-merge": "^4.1.1",
     "webpack": "^3.10.0",
-    "http-server": "^0.11.1"
+    "webpack-merge": "^4.1.1"
   }
 }

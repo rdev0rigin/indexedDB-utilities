@@ -116,7 +116,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 
 function demo() {
     return __awaiter(this, void 0, void 0, function () {
-        var stores, addResponse, putResponse, updateResponse, getResponse, removeResponse;
+        var stores, addResponse, getResponse, putResponse, updateResponse, removeResponse;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
@@ -124,7 +124,7 @@ function demo() {
                      *
                      * Call iDBU(config) with config parameters to open an IndexedDB and return a promise that holds
                      * an Object with helper methods, add(), put(), update(), get() and remove().
-                     * if one doesn't exsist then it will be made. Note: Once ObjectStores are defined they are tied to this
+                     * if one doesn't exsist then it will be made. Note: Once ObjectStores are defined they
                      * IDBs version number and to add more you must provide a new version number.
                      *
                      *  The Config Object = {
@@ -158,7 +158,17 @@ function demo() {
                             .catch(function (err) { return console.log('Add Error', err); })];
                 case 2:
                     addResponse = _a.sent();
-                    console.log('add response', addResponse);
+                    console.log('add response', addResponse); // add response foo
+                    /**
+                     *  get(storeName: string, key: string) => Promise<any>;
+                     *  returns the value stored that matches the value stored in [keyPath]: String
+                     *  or throws an Request.Result Object
+                     */
+                    console.log('calling get');
+                    return [4 /*yield*/, stores.get('demoStore0', 'foo')];
+                case 3:
+                    getResponse = _a.sent();
+                    console.log('get response', getResponse); // get response {myKey:'foo', value: [{ bat: 'squeek'}, {bear: 'grrr'}]}
                     /**
                      *  put(storeName: string, value: any) => Promise<string | {}>;
                      *  returns a string with the saved value's key or throws Request.Result Object.
@@ -169,32 +179,31 @@ function demo() {
                             myKey: 'foo',
                             value: [{ cat: 'meow' }]
                         })];
-                case 3:
+                case 4:
                     putResponse = _a.sent();
-                    console.log('put response', putResponse);
+                    console.log('put response', putResponse); // put response foo
+                    return [4 /*yield*/, stores.get('demoStore0', 'foo')];
+                case 5:
+                    getResponse = _a.sent();
+                    console.log('get response', getResponse); // {myKey:'foo', value: [{cat: 'meow'}]}
                     /**
                      *  update(storeName: string, key: string, value: any) => Promise<string | {}>;
                      *  returns a string with the updated value's key or throws an Request.Result Object.
-                     *  Note: This will merge your values to an already stored object tied to a key
+                     *  Note: This will merge with your stored value, if it is an array it will concatenate
+                     *  the new values.
                      */
                     console.log('calling update');
                     return [4 /*yield*/, stores.update('demoStore0', 'foo', {
                             myKey: 'foo',
-                            value: [{ bat: 'squeek' }, { bear: 'grrr' }]
+                            value: [{ bat: 'squeek' }, { bear: 'grrr', dog: ['woof', 'bark'] }, { cat: 'purr' }, ['happy hacking!']]
                         })];
-                case 4:
+                case 6:
                     updateResponse = _a.sent();
-                    console.log('update Response', updateResponse);
-                    /**
-                     *  get(storeName: string, key: string) => Promise<any>;
-                     *  returns the value stored that matches the value stored in [keyPath]: String
-                     *  or throws an Request.Result Object
-                     */
-                    console.log('calling get');
+                    console.log('update response', updateResponse); // update response foo
                     return [4 /*yield*/, stores.get('demoStore0', 'foo')];
-                case 5:
+                case 7:
                     getResponse = _a.sent();
-                    console.log('get response', getResponse);
+                    console.log('get response', getResponse); // get response {myKey:'foo', value: [{cat: 'meow'}, { bat: 'squeek'}, {bear: 'grrr', dog: ['woof', 'bark']}, {cat: 'purr'}, ['happy hacking!']]}
                     /**
                      *  remove(storeName: string, key: string) => Promise<any>;
                      *  returns void or throws an Request.Result Object
@@ -202,9 +211,9 @@ function demo() {
                     console.log('calling remove');
                     return [4 /*yield*/, stores.remove('demoStore0', 'foo')
                             .catch(function (err) { return console.log('remove error', err); })];
-                case 6:
+                case 8:
                     removeResponse = _a.sent();
-                    console.log('removeResponse, should be void', removeResponse);
+                    console.log('removeResponse', removeResponse); // removeResponse undefined
                     return [2 /*return*/];
             }
         });
@@ -213,7 +222,7 @@ function demo() {
 console.log('calling demo');
 demo()
     .then(function (res) { return console.log('response', res); })
-    .catch(function (err) { return console.log('Error', err); });
+    .catch(function (err) { return console.log('Error: ', err); });
 
 
 /***/ }),
@@ -222,14 +231,6 @@ demo()
 
 "use strict";
 /* harmony export (immutable) */ __webpack_exports__["a"] = openIDB;
-var __assign = (this && this.__assign) || Object.assign || function(t) {
-    for (var s, i = 1, n = arguments.length; i < n; i++) {
-        s = arguments[i];
-        for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
-            t[p] = s[p];
-    }
-    return t;
-};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     return new (P || (P = Promise))(function (resolve, reject) {
         function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
@@ -273,17 +274,13 @@ function openIDB(config) {
                 return [2 /*return*/, void 0];
             }
             return [2 /*return*/, new Promise(function (resolve, reject) {
-                    console.log('opening DB', config);
                     var request = indexedDB.open(config.dbName, config.version);
                     request.onerror = function (evt) {
-                        console.log('opening error');
                         reject(request.result);
                     };
                     request.onupgradeneeded = function (evt) {
-                        console.log('onupgradeneeded fired', evt);
                         var nextDb = evt.target.result;
                         if (config.keyPath) {
-                            console.log('hit key path');
                             config.storeNames
                                 .forEach(function (storeName) {
                                 nextDb.createObjectStore(storeName, {
@@ -292,7 +289,6 @@ function openIDB(config) {
                             });
                         }
                         else {
-                            console.log('No hit key path');
                             config.storeNames
                                 .forEach(function (storeName) {
                                 nextDb.createObjectStore(storeName, {
@@ -308,7 +304,6 @@ function openIDB(config) {
                                 return __awaiter(this, void 0, void 0, function () {
                                     return __generator(this, function (_a) {
                                         return [2 /*return*/, new Promise(function (res, rej) {
-                                                console.log('calling add', storeName, value);
                                                 var request = db.transaction([storeName], 'readwrite')
                                                     .objectStore("" + storeName)
                                                     .add(value);
@@ -351,7 +346,8 @@ function openIDB(config) {
                                                     rej(request.result);
                                                 };
                                                 getRequest.onsuccess = function () {
-                                                    var updatedValue = __assign({}, getRequest.result, value);
+                                                    var currentValue = getRequest.result;
+                                                    var updatedValue = mergeDeep(currentValue, value);
                                                     var delRequest = transaction
                                                         .objectStore(storeName)
                                                         .delete(key);
@@ -368,15 +364,15 @@ function openIDB(config) {
                                     });
                                 });
                             },
-                            remove: function (storeName, key) {
+                            remove: function (storeName, keyValue) {
                                 return __awaiter(this, void 0, void 0, function () {
                                     return __generator(this, function (_a) {
                                         return [2 /*return*/, new Promise(function (res, rej) {
                                                 var delRequest = db.transaction([storeName], 'readwrite')
                                                     .objectStore(storeName)
-                                                    .delete(key);
+                                                    .delete(keyValue);
                                                 delRequest.onsuccess = function () {
-                                                    resolve(delRequest.result);
+                                                    res(delRequest.result);
                                                 };
                                                 delRequest.onerror = function () {
                                                     rej(delRequest.result);
@@ -407,6 +403,30 @@ function openIDB(config) {
                 })];
         });
     });
+}
+// https://stackoverflow.com/a/48275932/7473184
+function mergeDeep(target, source) {
+    if (typeof target == "object" && typeof source == "object") {
+        for (var key in source) {
+            if (source[key] === null && (target[key] === undefined || target[key] === null)) {
+                target[key] = null;
+            }
+            else if (source[key] instanceof Array) {
+                if (!target[key])
+                    target[key] = [];
+                target[key] = target[key].concat(source[key]);
+            }
+            else if (typeof source[key] == "object") {
+                if (!target[key])
+                    target[key] = {};
+                this.mergeDeep(target[key], source[key]);
+            }
+            else {
+                target[key] = source[key];
+            }
+        }
+    }
+    return target;
 }
 
 

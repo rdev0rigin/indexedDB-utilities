@@ -8,15 +8,11 @@ var nodeModules = fs.readdirSync('node_modules')
 		return ['.bin'].indexOf(x) === -1;
 	});
 
-// .forEach(function(mod) {
-// 	nodeModules[mod] = 'commonjs ' + mod;
-// });
 
-var backendConfig = {
+var appconfig = {
 	entry: [
 		'./src/index'
 	],
-	target: 'node',
 	output: {
 		path: path.join(__dirname, 'bundle'),
 		filename: 'bundle.js'
@@ -78,4 +74,4 @@ var defaultConfig = {
 
 };
 
-module.exports = webpackMerge(defaultConfig, backendConfig);
+module.exports = webpackMerge(defaultConfig, appconfig);

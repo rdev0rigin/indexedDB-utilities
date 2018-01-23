@@ -7,7 +7,7 @@ async function demo() {
 	 *
 	 * Call iDBU(config) with config parameters to open an IndexedDB and return a promise that holds
 	 * an Object with helper methods, add(), put(), update(), get() and remove().
-     * if one doesn't exsist then it will be made. Note: Once ObjectStores are defined they are tied to this
+     * if one doesn't exsist then it will be made. Note: Once ObjectStores are defined they
      * IDBs version number and to add more you must provide a new version number.
      *
      *  The Config Object = {
@@ -40,7 +40,16 @@ async function demo() {
 			value: [{ bat: 'squeek'}, {bear: 'grrr'}]
 		})
 		.catch(err => console.log('Add Error', err));
-	console.log('add response', addResponse);
+	console.log('add response', addResponse); // add response foo
+
+	/**
+	 *  get(storeName: string, key: string) => Promise<any>;
+	 *  returns the value stored that matches the value stored in [keyPath]: String
+	 *  or throws an Request.Result Object
+	 */
+	console.log('calling get');
+	let getResponse = await stores.get('demoStore0', 'foo');
+	console.log('get response', getResponse); // get response {myKey:'foo', value: [{ bat: 'squeek'}, {bear: 'grrr'}]}
 
 	/**
 	 *  put(storeName: string, value: any) => Promise<string | {}>;
@@ -54,12 +63,16 @@ async function demo() {
 			myKey: 'foo',
 			value: [{ cat: 'meow'}]
 		});
-	console.log('put response', putResponse);
+
+	console.log('put response', putResponse); // put response foo
+	getResponse = await stores.get('demoStore0', 'foo');
+	console.log('get response', getResponse); // {myKey:'foo', value: [{cat: 'meow'}]}
 
 	/**
 	 *  update(storeName: string, key: string, value: any) => Promise<string | {}>;
 	 *  returns a string with the updated value's key or throws an Request.Result Object.
-	 *  Note: This will merge your values to an already stored object tied to a key
+	 *  Note: This will merge with your stored value, if it is an array it will concatenate
+	 *  the new values.
 	 */
 	console.log('calling update');
 	const updateResponse = await stores.update(
@@ -67,18 +80,11 @@ async function demo() {
 		'foo',
 		{
 			myKey: 'foo',
-			value: [{ bat: 'squeek'}, {bear: 'grrr'}]
+			value: [{ bat: 'squeek'}, {bear: 'grrr', dog: ['woof', 'bark']}, {cat: 'purr'}, ['happy hacking!']]
 		});
-	console.log('update Response', updateResponse);
-
-	/**
-	 *  get(storeName: string, key: string) => Promise<any>;
-	 *  returns the value stored that matches the value stored in [keyPath]: String
-	 *  or throws an Request.Result Object
-	 */
-	console.log('calling get');
-	const getResponse = await stores.get('demoStore0', 'foo');
-	console.log('get response', getResponse);
+	console.log('update response', updateResponse); // update response foo
+	getResponse = await stores.get('demoStore0', 'foo');
+	console.log('get response', getResponse); // get response {myKey:'foo', value: [{cat: 'meow'}, { bat: 'squeek'}, {bear: 'grrr', dog: ['woof', 'bark']}, {cat: 'purr'}, ['happy hacking!']]}
 
 	/**
 	 *  remove(storeName: string, key: string) => Promise<any>;
@@ -87,9 +93,9 @@ async function demo() {
 	console.log('calling remove');
 	const removeResponse = await stores.remove('demoStore0', 'foo')
 		.catch(err => console.log('remove error', err));
-	console.log('removeResponse, should be void', removeResponse);
+	console.log('removeResponse', removeResponse); // removeResponse undefined
 }
 console.log('calling demo');
 demo()
 	.then(res => console.log('response', res))
-	.catch(err => console.log('Error', err));
+	.catch(err => console.log('Error: ', err));
