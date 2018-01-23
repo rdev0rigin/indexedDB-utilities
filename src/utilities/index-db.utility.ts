@@ -7,30 +7,47 @@ export async function openIDB(config: IDBUConfigModel): Promise<IDBUtility> {
 		return void 0;
 	}
 	return new Promise<IDBUtility>((resolve, reject) => {
-		let request = indexedDB.open(config.dbName, config.version);
+		console.log('opening DB', config);
+		const request = indexedDB.open(config.dbName, config.version);
 		request.onerror = (evt: ErrorEvent | any) => {
-			reject(evt.target.errorCode);
+			console.log('opening error');
+			reject(request.result);
 		};
 		request.onupgradeneeded = (evt: IDBVersionChangeEvent | any): void => {
 			console.log('onupgradeneeded fired', evt);
-			let nextDb = evt.target.result;
-			config.storeNames
-				.forEach((storeName: string) => {
-					nextDb.createObjectStore(
-						storeName,
-						{
-							keyPath: 'dBKey'
-						}
-					);
-				});
+			const nextDb = evt.target.result;
+			if(config.keyPath){
+				console.log('hit key path');
+				config.storeNames
+					.forEach((storeName: string) => {
+						nextDb.createObjectStore(
+							storeName,
+							{
+								keyPath: config.keyPath
+							}
+						);
+					});
+			} else {
+				console.log('No hit key path');
+				config.storeNames
+					.forEach((storeName: string) => {
+						nextDb.createObjectStore(
+							storeName,
+							{
+								autoIncrement: true
+							}
+						);
+					});
+			}
 		};
 		request.onsuccess = (evt) => {
 			const db = request.result;
 			resolve({
 				async add(storeName: string, value: {}): Promise<string | {}> {
 					return new Promise((res, rej) => {
+						console.log('calling add', storeName, value);
 						const request = db.transaction([storeName], 'readwrite')
-							.objectStore(storeName)
+							.objectStore(`${storeName}`)
 							.add(value);
 						request.onsuccess = (evt) => {
 							res(request.result);
@@ -55,7 +72,7 @@ export async function openIDB(config: IDBUConfigModel): Promise<IDBUtility> {
 				},
 				async update(storeName: string, key: string, value: {}): Promise<string | {}> {
 					return new Promise((res, rej) => {
-						const transaction = db.transaction([storeName]);
+						const transaction = db.transaction([storeName], 'readwrite');
 						const getRequest = transaction
 							.objectStore(storeName)
 							.get(key);
@@ -64,11 +81,11 @@ export async function openIDB(config: IDBUConfigModel): Promise<IDBUtility> {
 						};
 						getRequest.onsuccess = () => {
 							const updatedValue = {...getRequest.result, ...value};
-							const delRequest = transaction([storeName])
+							const delRequest = transaction
 								.objectStore(storeName)
 								.delete(key);
 							delRequest.onsuccess = () => {
-								const addRequest = transaction([storeName])
+								const addRequest = transaction
 									.objectStore(storeName)
 									.add(updatedValue);
 								addRequest.onsuccess = () => {
@@ -99,7 +116,7 @@ export async function openIDB(config: IDBUConfigModel): Promise<IDBUtility> {
 						request.onsuccess = () => {
 							res(request.result);
 						};
-						request.onerror.onerror = () => {
+						request.onerror = () => {
 							rej(request.result);
 						};
 					});
@@ -108,5 +125,3 @@ export async function openIDB(config: IDBUConfigModel): Promise<IDBUtility> {
 		};
 	});
 }
-
-export default openIDB;

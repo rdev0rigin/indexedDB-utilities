@@ -1,7 +1,7 @@
 export interface IDBUtility {
-	add: (storeName: string, value: any) => Promise<string | {}>;
-	remove: (storeName: string, value: any) => Promise<any>;
+	add: (storeName: string, value: {}) => Promise<string | {}>;
+	put: (storeName: string, value: {}) => Promise<string | {}>;
+	update: (storeName: string, key: string, value: {}) => Promise<string | {}>;
 	get: (storeName: string, key: string) => Promise<any>;
-	put: (storeName: string, value: any) => Promise<string | {}>;
-	update: (storeName: string, key: string, value: any) => Promise<string | {}>;
+	remove: (storeName: string, key: string) => Promise<any>;
 }

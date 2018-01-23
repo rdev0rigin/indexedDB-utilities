@@ -1,6 +1,3 @@
-import openIDB from './utilities/index-db.utility';
-import {IDBUConfigModel} from "./models/config.model";
+import { openIDB } from './utilities/index-db.utility';
 
-const iDBU = (config: IDBUConfigModel) => openIDB(config);
-
-export default iDBU;
+export const iDBU = openIDB;
