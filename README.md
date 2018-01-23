@@ -43,7 +43,7 @@ async function demo() {
         myKey: 'foo',
         value: [{ bat: 'squeek'}, {bear: 'grrr'}]
     })
-    .catch(err => console.log('Add Error', err));
+        .catch(err => console.log('Add Error', err));
     console.log('add response', addResponse); // add response foo
 
     /**
@@ -96,7 +96,7 @@ async function demo() {
     */
     console.log('calling remove');
     const removeResponse = await stores.remove('demoStore0', 'foo')
-    .catch(err => console.log('remove error', err));
+        .catch(err => console.log('remove error', err));
 	console.log('removeResponse', removeResponse); // removeResponse undefined
 }
 console.log('calling demo');
