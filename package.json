@@ -1,7 +1,7 @@
 {
   "name": "indexed-db-utilities",
-  "version": "1.0.2",
-  "description": "Helper methods and utilities for creating managing values dynamically for the browser IndexDB API.",
+  "version": "1.1.0",
+  "description": "Helper methods and utilities for creating managing values dynamically for the browser's IndexDB API.",
   "main": "bundle/bundle.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
