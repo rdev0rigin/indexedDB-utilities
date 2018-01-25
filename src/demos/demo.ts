@@ -5,7 +5,7 @@ async function demo() {
 
 	/**
 	 *
-	 * Call iDBU(config) with config parameters to open an IndexedDB and return a promise that holds
+	 * Call openIDBUtilities(config) with config parameters to open an IndexedDB and return a promise that holds
 	 * an Object with helper methods, add(), put(), update(), get() and remove().
      * if one doesn't exsist then it will be made. Note: Once ObjectStores are defined they
      * IDBs version number and to add more you must provide a new version number.
@@ -80,11 +80,11 @@ async function demo() {
 		'foo',
 		{
 			myKey: 'foo',
-			value: [{ bat: 'squeek'}, {bear: 'grrr', dog: ['woof', 'bark']}, {cat: 'purr'}, ['happy hacking!']]
+			value: [{ bat: 'squeak'}, {bear: 'grrr', dog: ['woof', 'bark']}, {cat: 'purr'}, ['happy hacking!']]
 		});
 	console.log('update response', updateResponse); // update response foo
 	getResponse = await stores.get('demoStore0', 'foo');
-	console.log('get response', getResponse); // get response {myKey:'foo', value: [{cat: 'meow'}, { bat: 'squeek'}, {bear: 'grrr', dog: ['woof', 'bark']}, {cat: 'purr'}, ['happy hacking!']]}
+	console.log('get response', getResponse); // get response {myKey:'foo', value: [{cat: 'meow'}, { bat: 'squeak'}, {bear: 'grrr', dog: ['woof', 'bark']}, {cat: 'purr'}, ['happy hacking!']]}
 
 	/**
 	 *  remove(storeName: string, key: string) => Promise<any>;

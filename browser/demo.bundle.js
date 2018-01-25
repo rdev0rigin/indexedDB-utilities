@@ -188,7 +188,7 @@ function demo() {
                     console.log('calling update');
                     return [4 /*yield*/, stores.update('demoStore0', 'foo', {
                             myKey: 'foo',
-                            value: [{ bat: 'squeek' }, { bear: 'grrr', dog: ['woof', 'bark'] }, { cat: 'purr' }, ['happy hacking!']]
+                            value: [{ bat: 'squeak' }, { bear: 'grrr', dog: ['woof', 'bark'] }, { cat: 'purr' }, ['happy hacking!']]
                         })];
                 case 6:
                     updateResponse = _a.sent();
