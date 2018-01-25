@@ -1,7 +1,7 @@
 import { IDBUConfigModel } from '../models/config.model';
 import { IDBUtility } from '../models/idb-utility.model';
 
-export async function openIDB(config: IDBUConfigModel): Promise<IDBUtility> {
+const openIDB = async (config: IDBUConfigModel): Promise<IDBUtility> => {
 	if (!window.indexedDB) {
 		// console.log("Your browser doesn't support a stable version of IndexedDB. IndexedDB will not be available.");
 		return void 0;
@@ -119,18 +119,21 @@ export async function openIDB(config: IDBUConfigModel): Promise<IDBUtility> {
 			});
 		};
 	});
-}
+};
 
 // https://stackoverflow.com/a/48275932/7473184
 function mergeDeep (target, source)  {
-	if (typeof target == "object" && typeof source == "object") {
+	if (typeof target === "object" && typeof source === "object") {
 		for (const key in source) {
-			if (source[key] === null && (target[key] === undefined || target[key] === null)) {
-				target[key] = null;
+			if (source[key] === null
+				&& (target[key] === undefined
+				|| target[key] === null)) {
+					target[key] = null;
 			} else if (source[key] instanceof Array) {
 				if (!target[key]) target[key] = [];
-				target[key] = target[key].concat(source[key]);
-			} else if (typeof source[key] == "object") {
+				target[key] = target[key]
+					.concat(source[key]);
+			} else if (typeof source[key] === "object") {
 				if (!target[key]) target[key] = {};
 				this.mergeDeep(target[key], source[key]);
 			} else {
@@ -140,3 +143,5 @@ function mergeDeep (target, source)  {
 	}
 	return target;
 }
+
+export const openIDBUtilities = openIDB;

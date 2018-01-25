@@ -33,157 +33,159 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
-export function openIDB(config) {
-    return __awaiter(this, void 0, void 0, function () {
-        return __generator(this, function (_a) {
-            if (!window.indexedDB) {
-                // console.log("Your browser doesn't support a stable version of IndexedDB. IndexedDB will not be available.");
-                return [2 /*return*/, void 0];
-            }
-            return [2 /*return*/, new Promise(function (resolve, reject) {
-                    var request = indexedDB.open(config.dbName, config.version);
-                    request.onerror = function (evt) {
-                        reject(request.result);
-                    };
-                    request.onupgradeneeded = function (evt) {
-                        var nextDb = evt.target.result;
-                        if (config.keyPath) {
-                            config.storeNames
-                                .forEach(function (storeName) {
-                                nextDb.createObjectStore(storeName, {
-                                    keyPath: config.keyPath
+var _this = this;
+var openIDB = function (config) { return __awaiter(_this, void 0, void 0, function () {
+    return __generator(this, function (_a) {
+        if (!window.indexedDB) {
+            // console.log("Your browser doesn't support a stable version of IndexedDB. IndexedDB will not be available.");
+            return [2 /*return*/, void 0];
+        }
+        return [2 /*return*/, new Promise(function (resolve, reject) {
+                var request = indexedDB.open(config.dbName, config.version);
+                request.onerror = function (evt) {
+                    reject(request.result);
+                };
+                request.onupgradeneeded = function (evt) {
+                    var nextDb = evt.target.result;
+                    if (config.keyPath) {
+                        config.storeNames
+                            .forEach(function (storeName) {
+                            nextDb.createObjectStore(storeName, {
+                                keyPath: config.keyPath
+                            });
+                        });
+                    }
+                    else {
+                        config.storeNames
+                            .forEach(function (storeName) {
+                            nextDb.createObjectStore(storeName, {
+                                autoIncrement: true
+                            });
+                        });
+                    }
+                };
+                request.onsuccess = function (evt) {
+                    var db = request.result;
+                    resolve({
+                        add: function (storeName, value) {
+                            return __awaiter(this, void 0, void 0, function () {
+                                return __generator(this, function (_a) {
+                                    return [2 /*return*/, new Promise(function (res, rej) {
+                                            var request = db.transaction([storeName], 'readwrite')
+                                                .objectStore("" + storeName)
+                                                .add(value);
+                                            request.onsuccess = function (evt) {
+                                                res(request.result);
+                                            };
+                                            request.onerror = function () {
+                                                rej(request.result);
+                                            };
+                                        })];
                                 });
                             });
-                        }
-                        else {
-                            config.storeNames
-                                .forEach(function (storeName) {
-                                nextDb.createObjectStore(storeName, {
-                                    autoIncrement: true
+                        },
+                        put: function (storeName, value) {
+                            return __awaiter(this, void 0, void 0, function () {
+                                return __generator(this, function (_a) {
+                                    return [2 /*return*/, new Promise(function (res, rej) {
+                                            var request = db.transaction([storeName], 'readwrite')
+                                                .objectStore(storeName)
+                                                .put(value);
+                                            request.onsuccess = function () {
+                                                res(request.result);
+                                            };
+                                            request.onerror = function () {
+                                                rej(request.result);
+                                            };
+                                        })];
                                 });
                             });
-                        }
-                    };
-                    request.onsuccess = function (evt) {
-                        var db = request.result;
-                        resolve({
-                            add: function (storeName, value) {
-                                return __awaiter(this, void 0, void 0, function () {
-                                    return __generator(this, function (_a) {
-                                        return [2 /*return*/, new Promise(function (res, rej) {
-                                                var request = db.transaction([storeName], 'readwrite')
-                                                    .objectStore("" + storeName)
-                                                    .add(value);
-                                                request.onsuccess = function (evt) {
-                                                    res(request.result);
-                                                };
-                                                request.onerror = function () {
-                                                    rej(request.result);
-                                                };
-                                            })];
-                                    });
-                                });
-                            },
-                            put: function (storeName, value) {
-                                return __awaiter(this, void 0, void 0, function () {
-                                    return __generator(this, function (_a) {
-                                        return [2 /*return*/, new Promise(function (res, rej) {
-                                                var request = db.transaction([storeName], 'readwrite')
+                        },
+                        update: function (storeName, key, value) {
+                            return __awaiter(this, void 0, void 0, function () {
+                                return __generator(this, function (_a) {
+                                    return [2 /*return*/, new Promise(function (res, rej) {
+                                            var transaction = db.transaction([storeName], 'readwrite');
+                                            var getRequest = transaction
+                                                .objectStore(storeName)
+                                                .get(key);
+                                            transaction.onerror = function () {
+                                                rej(request.result);
+                                            };
+                                            getRequest.onsuccess = function () {
+                                                var currentValue = getRequest.result;
+                                                var updatedValue = mergeDeep(currentValue, value);
+                                                var delRequest = transaction
                                                     .objectStore(storeName)
-                                                    .put(value);
-                                                request.onsuccess = function () {
-                                                    res(request.result);
-                                                };
-                                                request.onerror = function () {
-                                                    rej(request.result);
-                                                };
-                                            })];
-                                    });
-                                });
-                            },
-                            update: function (storeName, key, value) {
-                                return __awaiter(this, void 0, void 0, function () {
-                                    return __generator(this, function (_a) {
-                                        return [2 /*return*/, new Promise(function (res, rej) {
-                                                var transaction = db.transaction([storeName], 'readwrite');
-                                                var getRequest = transaction
-                                                    .objectStore(storeName)
-                                                    .get(key);
-                                                transaction.onerror = function () {
-                                                    rej(request.result);
-                                                };
-                                                getRequest.onsuccess = function () {
-                                                    var currentValue = getRequest.result;
-                                                    var updatedValue = mergeDeep(currentValue, value);
-                                                    var delRequest = transaction
+                                                    .delete(key);
+                                                delRequest.onsuccess = function () {
+                                                    var addRequest = transaction
                                                         .objectStore(storeName)
-                                                        .delete(key);
-                                                    delRequest.onsuccess = function () {
-                                                        var addRequest = transaction
-                                                            .objectStore(storeName)
-                                                            .add(updatedValue);
-                                                        addRequest.onsuccess = function () {
-                                                            res(addRequest.result);
-                                                        };
+                                                        .add(updatedValue);
+                                                    addRequest.onsuccess = function () {
+                                                        res(addRequest.result);
                                                     };
                                                 };
-                                            })];
-                                    });
+                                            };
+                                        })];
                                 });
-                            },
-                            remove: function (storeName, keyValue) {
-                                return __awaiter(this, void 0, void 0, function () {
-                                    return __generator(this, function (_a) {
-                                        return [2 /*return*/, new Promise(function (res, rej) {
-                                                var delRequest = db.transaction([storeName], 'readwrite')
-                                                    .objectStore(storeName)
-                                                    .delete(keyValue);
-                                                delRequest.onsuccess = function () {
-                                                    res(delRequest.result);
-                                                };
-                                                delRequest.onerror = function () {
-                                                    rej(delRequest.result);
-                                                };
-                                            })];
-                                    });
+                            });
+                        },
+                        remove: function (storeName, keyValue) {
+                            return __awaiter(this, void 0, void 0, function () {
+                                return __generator(this, function (_a) {
+                                    return [2 /*return*/, new Promise(function (res, rej) {
+                                            var delRequest = db.transaction([storeName], 'readwrite')
+                                                .objectStore(storeName)
+                                                .delete(keyValue);
+                                            delRequest.onsuccess = function () {
+                                                res(delRequest.result);
+                                            };
+                                            delRequest.onerror = function () {
+                                                rej(delRequest.result);
+                                            };
+                                        })];
                                 });
-                            },
-                            get: function (storeName, key) {
-                                return __awaiter(this, void 0, void 0, function () {
-                                    return __generator(this, function (_a) {
-                                        return [2 /*return*/, new Promise(function (res, rej) {
-                                                var request = db.transaction([storeName])
-                                                    .objectStore(storeName)
-                                                    .get(key);
-                                                request.onsuccess = function () {
-                                                    res(request.result);
-                                                };
-                                                request.onerror = function () {
-                                                    rej(request.result);
-                                                };
-                                            })];
-                                    });
+                            });
+                        },
+                        get: function (storeName, key) {
+                            return __awaiter(this, void 0, void 0, function () {
+                                return __generator(this, function (_a) {
+                                    return [2 /*return*/, new Promise(function (res, rej) {
+                                            var request = db.transaction([storeName])
+                                                .objectStore(storeName)
+                                                .get(key);
+                                            request.onsuccess = function () {
+                                                res(request.result);
+                                            };
+                                            request.onerror = function () {
+                                                rej(request.result);
+                                            };
+                                        })];
                                 });
-                            }
-                        });
-                    };
-                })];
-        });
+                            });
+                        }
+                    });
+                };
+            })];
     });
-}
+}); };
 // https://stackoverflow.com/a/48275932/7473184
 function mergeDeep(target, source) {
-    if (typeof target == "object" && typeof source == "object") {
+    if (typeof target === "object" && typeof source === "object") {
         for (var key in source) {
-            if (source[key] === null && (target[key] === undefined || target[key] === null)) {
+            if (source[key] === null
+                && (target[key] === undefined
+                    || target[key] === null)) {
                 target[key] = null;
             }
             else if (source[key] instanceof Array) {
                 if (!target[key])
                     target[key] = [];
-                target[key] = target[key].concat(source[key]);
+                target[key] = target[key]
+                    .concat(source[key]);
             }
-            else if (typeof source[key] == "object") {
+            else if (typeof source[key] === "object") {
                 if (!target[key])
                     target[key] = {};
                 this.mergeDeep(target[key], source[key]);
@@ -195,4 +197,5 @@ function mergeDeep(target, source) {
     }
     return target;
 }
+export var openIDBUtilities = openIDB;
 //# sourceMappingURL=index-db.utility.js.map

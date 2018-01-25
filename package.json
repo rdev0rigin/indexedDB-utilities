@@ -1,13 +1,14 @@
 {
   "name": "indexed-db-utilities",
-  "version": "0.1.1",
+  "version": "1.0.0",
   "description": "Helper methods and utilities for creating managing values dynamically for the browser IndexDB API.",
   "main": "bundle/bundle.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "webpack --config webpack.config.js",
+    "bundle": "webpack --config webpack.config.js",
+    "build": "tsc && npx babel dist/utilities/index-db.utility.js --out-file dist/idb-util.js && browserify dist/idb-util.js -o dist/idb-util.js",
     "demo": "webpack --config webpack.demo.config.js --watch",
-    "docs": "typedoc ./src/index.ts --out ./docs/"
+    "docs": "typedoc ./src/indexed-db-utilities.ts --out ./docs/"
   },
   "repository": {
     "type": "git",
@@ -27,12 +28,15 @@
   "devDependencies": {
     "@types/lodash": "^4.14.94",
     "@types/node": "9.3.0",
+    "awesome-typescript-loader": "^3.4.1",
+    "source-map-loader": "^0.2.3",
+    "babel-cli": "^6.26.0",
+    "ts-loader": "^3.3.1",
     "tslint": "5.9.1",
     "tslint-loader": "3.5.3",
-    "awesome-typescript-loader": "^3.4.1",
-    "ts-loader": "^3.3.1",
     "typescript": "^2.6.2",
     "webpack": "^3.10.0",
-    "webpack-merge": "^4.1.1"
+    "webpack-merge": "^4.1.1",
+    "babel-preset-env": "^1.6.1"
   }
 }

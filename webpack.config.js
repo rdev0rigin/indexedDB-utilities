@@ -1,77 +1,57 @@
-var webpack = require('webpack');
-var path = require('path');
-var fs = require('fs');
-var webpackMerge = require('webpack-merge');
+const path = require('path');
+const webpack = require('webpack');
 
-var nodeModules = fs.readdirSync('node_modules')
-	.filter(function(x) {
-		return ['.bin'].indexOf(x) === -1;
-	});
+const ROOT = path.resolve( __dirname, 'src' );
+const DESTINATION = path.resolve( __dirname, 'browser' );
 
+module.exports = {
+	context: ROOT,
 
-var appConfig = {
-	entry: [
-		'./src/index'
-	],
-	output: {
-		path: path.join(__dirname, 'bundle'),
-		filename: 'bundle.js'
+	entry: {
+		'idb-util': './indexed-db-utilities.ts'
 	},
-	node: {
-		__dirname: true,
-		__filename: true
-	},
-	externals: [
-		function(context, request, callback) {
-			var pathStart = request.split('/')[0];
-			if (nodeModules.indexOf(pathStart) >= 0) {
-				return callback(null, "commonjs " + request);
-			}
-			callback();
-		}
-	],
 
-	// recordsPath: path.join(__dirname, 'bundle/_records'),
-	plugins: [
-		// new WebpackShellPlugin({
-		// 	onBuildEnd: ['node ./bundle/backend.js']
-		// })
-	],
-	module: {
-		loaders: [
-			{
-				test: /\.ts$/,
-				loaders: [
-					'awesome-typescript-loader'
-				]
-			}
-		]
-	}
-
-};
-
-var defaultConfig = {
-	devtool: "source-map",
 	output: {
 		filename: '[name].bundle.js',
-		sourceMapFilename: '[name].map',
-		chunkFilename: '[id].chunk.js'
+		path: DESTINATION
 	},
+
 	resolve: {
-		extensions: [ ".ts", ".js" ],
-		modules: [ path.resolve(__dirname, "node_modules") ]  // jshint ignore:line
+		extensions: ['.ts', '.js'],
+		modules: [
+			ROOT,
+			'node_modules'
+		]
 	},
-	node: {
-		global: true,
-		crypto: 'empty',
-		__dirname: true,
-		__filename: true,
-		process: true,
-		Buffer: false,
-		clearImmediate: false,
-		setImmediate: false
-	}
 
+	module: {
+		rules: [
+			/****************
+			 * PRE-LOADERS
+			 *****************/
+			{
+				enforce: 'pre',
+				test: /\.js$/,
+				use: 'source-map-loader'
+			},
+			{
+				enforce: 'pre',
+				test: /\.ts$/,
+				exclude: /node_modules/,
+				use: 'tslint-loader'
+			},
+
+			/****************
+			 * LOADERS
+			 *****************/
+			{
+				test: /\.ts$/,
+				exclude: [ /node_modules/ ],
+				use: 'awesome-typescript-loader'
+			}
+		]
+	},
+
+	devtool: 'cheap-module-source-map',
+	devServer: {}
 };
-
-module.exports = webpackMerge(defaultConfig, appConfig);

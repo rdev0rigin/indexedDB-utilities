@@ -2,8 +2,19 @@
 >A lightweight utility helper that opens or creates an `IndexedDB` with `objectStores` that returns an object with utility methods.
 
 
+# Browser
+
+TODO
+
+# ES6
+
+TODO
+
+
+# TypeScript
+
 ```typescript
-import { openIDB } from "../utilities/index-db.utility";
+import {openIDBUtilities} from "../utilities/index-db.utility";
 
 async function demo() {
 

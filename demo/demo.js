@@ -136,7 +136,7 @@ function demo() {
                      *
                      **/
                     console.log('calling open');
-                    return [4 /*yield*/, Object(__WEBPACK_IMPORTED_MODULE_0__utilities_index_db_utility__["a" /* openIDB */])({
+                    return [4 /*yield*/, Object(__WEBPACK_IMPORTED_MODULE_0__utilities_index_db_utility__["a" /* openIDBUtilities */])({
                             version: 1,
                             dbName: 'DemoIDB-1',
                             storeNames: ['demoStore0', 'demoStore1'],

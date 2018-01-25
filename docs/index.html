@@ -68,25 +68,30 @@
 				<blockquote>
 					<p>A lightweight utility helper that opens or creates an <code>IndexedDB</code> with <code>objectStores</code> that returns an object with utility methods.</p>
 				</blockquote>
-				<pre><code class="lang-typescript"><span class="hljs-keyword">import</span> { openIDB } <span class="hljs-keyword">from</span> <span class="hljs-string">"../utilities/index-db.utility"</span>;
+				<h1 id="browser">Browser</h1>
+				<p>TODO</p>
+				<h1 id="es6">ES6</h1>
+				<p>TODO</p>
+				<h1 id="typescript">TypeScript</h1>
+				<pre><code class="lang-typescript"><span class="hljs-keyword">import</span> {openIDBUtilities} <span class="hljs-keyword">from</span> <span class="hljs-string">"../utilities/index-db.utility"</span>;
 
 <span class="hljs-keyword">async</span> <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">demo</span>(<span class="hljs-params"></span>) </span>{
 
     <span class="hljs-comment">/**
-     *
-     * Call iDBU(config) with config parameters to open an IndexedDB and return a promise that holds
-     * an Object with helper methods, add(), put(), update(), get() and remove().
-     * if one doesn't exsist then it will be made. Note: Once ObjectStores are defined they
-     * IDBs version number and to add more you must provide a new version number.
-     *
-     *  The Config Object = {
-     *      version: Number
-     *      dbName: String
-     *      storeNames: String[]
-     *      keyPath?: String
-     *    }
-     *
-     **/</span>
+    *
+    * Call iDBU(config) with config parameters to open an IndexedDB and return a promise that holds
+    * an Object with helper methods, add(), put(), update(), get() and remove().
+    * if one doesn't exsist then it will be made. Note: Once ObjectStores are defined they
+    * IDBs version number and to add more you must provide a new version number.
+    *
+    *  The Config Object = {
+    *      version: Number
+    *      dbName: String
+    *      storeNames: String[]
+    *      keyPath?: String
+    *    }
+    *
+    **/</span>
 
     <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'calling open'</span>);
     <span class="hljs-keyword">const</span> stores = <span class="hljs-keyword">await</span> openIDB({
@@ -97,68 +102,68 @@
     });
     <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'stores'</span>, stores);
     <span class="hljs-comment">/**
-     *     add(storeName: string, value: any) =&gt; Promise&lt;string | {}&gt;;
-     *     returns a string with the saved value's key or Request.Result Object.
-     *     Note: You cannot add new values to objects with keys that already exsist, use put() or update().
-     */</span>
+    *     add(storeName: string, value: any) =&gt; Promise&lt;string | {}&gt;;
+    *     returns a string with the saved value's key or Request.Result Object.
+    *     Note: You cannot add new values to objects with keys that already exsist, use put() or update().
+    */</span>
     <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'calling add'</span>);
     <span class="hljs-keyword">const</span> addResponse = <span class="hljs-keyword">await</span> stores.add(
-        <span class="hljs-string">'demoStore0'</span>,
-        {
-            myKey: <span class="hljs-string">'foo'</span>,
-            value: [{ bat: <span class="hljs-string">'squeek'</span>}, {bear: <span class="hljs-string">'grrr'</span>}]
-        })
+    <span class="hljs-string">'demoStore0'</span>,
+    {
+        myKey: <span class="hljs-string">'foo'</span>,
+        value: [{ bat: <span class="hljs-string">'squeek'</span>}, {bear: <span class="hljs-string">'grrr'</span>}]
+    })
         .catch(<span class="hljs-function"><span class="hljs-params">err</span> =&gt;</span> <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'Add Error'</span>, err));
     <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'add response'</span>, addResponse); <span class="hljs-comment">// add response foo</span>
 
     <span class="hljs-comment">/**
-     *  get(storeName: string, key: string) =&gt; Promise&lt;any&gt;;
-     *  returns the value stored that matches the value stored in [keyPath]: String
-     *  or throws an Request.Result Object
-     */</span>
+    *  get(storeName: string, key: string) =&gt; Promise&lt;any&gt;;
+    *  returns the value stored that matches the value stored in [keyPath]: String
+    *  or throws an Request.Result Object
+    */</span>
     <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'calling get'</span>);
     <span class="hljs-keyword">let</span> getResponse = <span class="hljs-keyword">await</span> stores.get(<span class="hljs-string">'demoStore0'</span>, <span class="hljs-string">'foo'</span>);
     <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'get response'</span>, getResponse); <span class="hljs-comment">// get response {myKey:'foo', value: [{ bat: 'squeek'}, {bear: 'grrr'}]}</span>
 
     <span class="hljs-comment">/**
-     *  put(storeName: string, value: any) =&gt; Promise&lt;string | {}&gt;;
-     *  returns a string with the saved value's key or throws Request.Result Object.
-     *  Note: This will overwrite your value saved related your key.
-     */</span>
+    *  put(storeName: string, value: any) =&gt; Promise&lt;string | {}&gt;;
+    *  returns a string with the saved value's key or throws Request.Result Object.
+    *  Note: This will overwrite your value saved related your key.
+    */</span>
     <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'calling put'</span>);
     <span class="hljs-keyword">const</span> putResponse = <span class="hljs-keyword">await</span> stores.put(
-        <span class="hljs-string">'demoStore0'</span>,
-        {
-            myKey: <span class="hljs-string">'foo'</span>,
-            value: [{ cat: <span class="hljs-string">'meow'</span>}]
-        });
+    <span class="hljs-string">'demoStore0'</span>,
+    {
+        myKey: <span class="hljs-string">'foo'</span>,
+        value: [{ cat: <span class="hljs-string">'meow'</span>}]
+    });
 
     <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'put response'</span>, putResponse); <span class="hljs-comment">// put response foo</span>
     getResponse = <span class="hljs-keyword">await</span> stores.get(<span class="hljs-string">'demoStore0'</span>, <span class="hljs-string">'foo'</span>);
     <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'get response'</span>, getResponse); <span class="hljs-comment">// {myKey:'foo', value: [{cat: 'meow'}]}</span>
 
     <span class="hljs-comment">/**
-     *  update(storeName: string, key: string, value: any) =&gt; Promise&lt;string | {}&gt;;
-     *  returns a string with the updated value's key or throws an Request.Result Object.
-     *  Note: This will merge with your stored value, if it is an array it will concatenate
-     *  the new values.
-     */</span>
+    *  update(storeName: string, key: string, value: any) =&gt; Promise&lt;string | {}&gt;;
+    *  returns a string with the updated value's key or throws an Request.Result Object.
+    *  Note: This will merge with your stored value, if it is an array it will concatenate
+    *  the new values.
+    */</span>
     <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'calling update'</span>);
     <span class="hljs-keyword">const</span> updateResponse = <span class="hljs-keyword">await</span> stores.update(
-        <span class="hljs-string">'demoStore0'</span>,
-        <span class="hljs-string">'foo'</span>,
-        {
-            myKey: <span class="hljs-string">'foo'</span>,
-            value: [{ bat: <span class="hljs-string">'squeek'</span>}, {bear: <span class="hljs-string">'grrr'</span>, dog: [<span class="hljs-string">'woof'</span>, <span class="hljs-string">'bark'</span>]}, {cat: <span class="hljs-string">'purr'</span>}, [<span class="hljs-string">'happy hacking!'</span>]]
-        });
+    <span class="hljs-string">'demoStore0'</span>,
+    <span class="hljs-string">'foo'</span>,
+    {
+        myKey: <span class="hljs-string">'foo'</span>,
+        value: [{ bat: <span class="hljs-string">'squeek'</span>}, {bear: <span class="hljs-string">'grrr'</span>, dog: [<span class="hljs-string">'woof'</span>, <span class="hljs-string">'bark'</span>]}, {cat: <span class="hljs-string">'purr'</span>}, [<span class="hljs-string">'happy hacking!'</span>]]
+    });
     <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'update response'</span>, updateResponse); <span class="hljs-comment">// update response foo</span>
     getResponse = <span class="hljs-keyword">await</span> stores.get(<span class="hljs-string">'demoStore0'</span>, <span class="hljs-string">'foo'</span>);
     <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'get response'</span>, getResponse); <span class="hljs-comment">// get response {myKey:'foo', value: [{cat: 'meow'}, { bat: 'squeek'}, {bear: 'grrr', dog: ['woof', 'bark']}, {cat: 'purr'}, ['happy hacking!']]}</span>
 
     <span class="hljs-comment">/**
-     *  remove(storeName: string, key: string) =&gt; Promise&lt;any&gt;;
-     *  returns void or throws an Request.Result Object
-     */</span>
+    *  remove(storeName: string, key: string) =&gt; Promise&lt;any&gt;;
+    *  returns void or throws an Request.Result Object
+    */</span>
     <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'calling remove'</span>);
     <span class="hljs-keyword">const</span> removeResponse = <span class="hljs-keyword">await</span> stores.remove(<span class="hljs-string">'demoStore0'</span>, <span class="hljs-string">'foo'</span>)
         .catch(<span class="hljs-function"><span class="hljs-params">err</span> =&gt;</span> <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'remove error'</span>, err));
@@ -181,7 +186,7 @@ demo()
 						<span>Internals</span>
 					</li>
 					<li class=" tsd-kind-external-module">
-						<a href="modules/_index_.html">"index"</a>
+						<a href="modules/_indexed_db_utilities_.html">"indexed-<wbr>db-<wbr>utilities"</a>
 					</li>
 					<li class="label tsd-is-external">
 						<span>Externals</span>

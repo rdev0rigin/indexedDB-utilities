@@ -34,7 +34,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 //tslint:disable
-import { openIDB } from "../utilities/index-db.utility";
+import { openIDBUtilities } from "../utilities/index-db.utility";
 function demo() {
     return __awaiter(this, void 0, void 0, function () {
         var stores, addResponse, getResponse, putResponse, updateResponse, removeResponse;
@@ -57,7 +57,7 @@ function demo() {
                      *
                      **/
                     console.log('calling open');
-                    return [4 /*yield*/, openIDB({
+                    return [4 /*yield*/, openIDBUtilities({
                             version: 1,
                             dbName: 'DemoIDB-1',
                             storeNames: ['demoStore0', 'demoStore1'],
