@@ -37,7 +37,7 @@ async function demo() {
 		'demoStore0',
 		{
 			myKey: 'foo',
-			value: [{ bat: 'squeek'}, {bear: 'grrr'}]
+			value: [{ bat: 'squeak'}, {bear: 'grrr'}]
 		})
 		.catch(err => console.log('Add Error', err));
 	console.log('add response', addResponse); // add response foo
@@ -49,7 +49,7 @@ async function demo() {
 	 */
 	console.log('calling get');
 	let getResponse = await stores.get('demoStore0', 'foo');
-	console.log('get response', getResponse); // get response {myKey:'foo', value: [{ bat: 'squeek'}, {bear: 'grrr'}]}
+	console.log('get response', getResponse); // get response {myKey:'foo', value: [{ bat: 'squeak'}, {bear: 'grrr'}]}
 
 	/**
 	 *  put(storeName: string, value: any) => Promise<string | {}>;

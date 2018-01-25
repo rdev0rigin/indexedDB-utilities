@@ -53,7 +53,7 @@ async function demo() {
     'demoStore0',
     {
         myKey: 'foo',
-        value: [{ bat: 'squeek'}, {bear: 'grrr'}]
+        value: [{ bat: 'squeak'}, {bear: 'grrr'}]
     })
         .catch(err => console.log('Add Error', err));
     console.log('add response', addResponse); // add response foo
@@ -65,7 +65,7 @@ async function demo() {
     */
     console.log('calling get');
     let getResponse = await stores.get('demoStore0', 'foo');
-    console.log('get response', getResponse); // get response {myKey:'foo', value: [{ bat: 'squeek'}, {bear: 'grrr'}]}
+    console.log('get response', getResponse); // get response {myKey:'foo', value: [{ bat: 'squeak'}, {bear: 'grrr'}]}
 
     /**
     *  put(storeName: string, value: any) => Promise<string | {}>;
@@ -96,11 +96,11 @@ async function demo() {
     'foo',
     {
         myKey: 'foo',
-        value: [{ bat: 'squeek'}, {bear: 'grrr', dog: ['woof', 'bark']}, {cat: 'purr'}, ['happy hacking!']]
+        value: [{ bat: 'squeak'}, {bear: 'grrr', dog: ['woof', 'bark']}, {cat: 'purr'}, ['happy hacking!']]
     });
     console.log('update response', updateResponse); // update response foo
     getResponse = await stores.get('demoStore0', 'foo');
-    console.log('get response', getResponse); // get response {myKey:'foo', value: [{cat: 'meow'}, { bat: 'squeek'}, {bear: 'grrr', dog: ['woof', 'bark']}, {cat: 'purr'}, ['happy hacking!']]}
+    console.log('get response', getResponse); // get response {myKey:'foo', value: [{cat: 'meow'}, { bat: 'squeak'}, {bear: 'grrr', dog: ['woof', 'bark']}, {cat: 'purr'}, ['happy hacking!']]}
 
     /**
     *  remove(storeName: string, key: string) => Promise<any>;
