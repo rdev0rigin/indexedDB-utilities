@@ -14,7 +14,8 @@ TODO
 # TypeScript
 
 ```typescript
-import {openIDBUtilities} from "../utilities/index-db.utility";
+
+import { openIDBUtilities } from 'indexed-db-utilities/dist/utilities/index-db.utility';
 
 async function demo() {
 
