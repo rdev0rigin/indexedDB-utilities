@@ -1,6 +1,6 @@
 {
   "name": "indexed-db-utilities",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Helper methods and utilities for creating managing values dynamically for the browser IndexDB API.",
   "main": "bundle/bundle.js",
   "scripts": {
