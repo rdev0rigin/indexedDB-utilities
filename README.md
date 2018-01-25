@@ -35,7 +35,7 @@ async function demo() {
     **/
 
     console.log('calling open');
-    const stores = await openIDB({
+    const stores = await openIDBUtilities({
         version: 1, // Numbers should be a positive Number and not contain any decimal digits.
         dbName: 'DemoIDB-1',
         storeNames: ['demoStore0', 'demoStore1'], // Provide and array of the storeNames in which you wish to store values in.
