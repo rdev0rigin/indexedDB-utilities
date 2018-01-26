@@ -126,9 +126,8 @@ demo()
 ```
 
 ## ES6
-
+example
 ```javascript
-
 import { openIDBUtilities } from 'indexed-db-utilities/dist/utilities/index-db.utility';
 
  async function offlineCache() {
@@ -146,7 +145,9 @@ import { openIDBUtilities } from 'indexed-db-utilities/dist/utilities/index-db.u
 
 ## Browser
 
-Place a `<script src="/node_models/indexed-dv-utilities"></script>` inside of your document.
+Place a `<script src="/node_modules/indexed-db-utilities/dist/indexed-db-utilities.js"></script>` inside of your document.
+Note: This attaches `openIDBUtilities()' to your window, use ES6's `import` or TypeScript to avoid the global.
+
 
 example
 ```html
@@ -173,7 +174,6 @@ example
                    console.log('addResponse', addResponse);
 
                });
-
            </script>
        </body>
    </html>
