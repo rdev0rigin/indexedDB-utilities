@@ -4,6 +4,8 @@
 ## How to use
 
 Opening an instance requires a config object,
+Note: Once the dbName is declared with an instance the keyPath is then tied to it and cannot change without changing
+the version number
 
 ```typescript
 const config: {
@@ -14,10 +16,21 @@ const config: {
 }
 ```
 
-Call `openIDBUtilities(config)` to return a promise holding an `IDBUtility` instance.  and return a promise that holds an
-Object with helper methods, add(), put(), update(), get() and remove(). If one doesn't exist then it will be made.
-Note: Once the dbName is declared with an instance the keyPath is then tied to it and cannot change without changing
-the version number
+Call `openIDBUtilities(config)` to return a promise holding an `IDBUtility` instance which has utility methods that return a promise.
+These promises throw a `Request.result` object on error.
+
+
+```typescript
+
+const IDBUtility: {
+    add: (storeName: string, value: {}) => Promise<string | Request.result>;
+    put: (storeName: string, value: {}) => Promise<string | Request.result>;
+    update: (storeName: string, keyValue: string, value: {}) => Promise<string | Request.result>;
+    get: (storeName: string, keyValue: string) => Promise<any | {[keyPath]: string , ...{}} | Request.result>;
+    remove: (storeName: string, keyValue: string) => Promise<void | Request.result>;
+}
+
+```
 
 ## TypeScript
 
