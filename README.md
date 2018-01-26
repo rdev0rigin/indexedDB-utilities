@@ -3,9 +3,9 @@
 
 ## How to use
 
-Opening an instance requires a config object,
-Note: Once the dbName is declared with an instance the keyPath is then tied to it and cannot change without changing
-the version number
+Opening an instance requires a config object.
+<b>Note:</b> Once the dbName is declared with an instance the keyPath is then tied to it and cannot change without changing
+the version number.
 
 ```typescript
 const config: {
@@ -15,10 +15,8 @@ const config: {
     keyPath?: String
 }
 ```
-
 Call `openIDBUtilities(config)` to return a promise holding an `IDBUtility` instance which has utility methods that return a promise.
 These promises throw a `Request.result` object on error.
-
 
 ```typescript
 
@@ -159,7 +157,7 @@ import { openIDBUtilities } from 'indexed-db-utilities/dist/utilities/index-db.u
 ## Browser
 
 Place a `<script src="/node_modules/indexed-db-utilities/dist/indexed-db-utilities.js"></script>` inside of your document.
-Note: This attaches `openIDBUtilities()' to your window, use ES6's `import` or TypeScript to avoid the global.
+Note: This attaches `openIDBUtilities()` to your window, use ES6's `import` or TypeScript to avoid the global.
 
 
 example
