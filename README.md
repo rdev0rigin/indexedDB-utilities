@@ -1,4 +1,4 @@
-# indexDB-utilities
+# IndexDB-Utilities
 >A lightweight utility helper that opens or creates an `IndexedDB` with `objectStores` that returns a promise that resolves utility methods.
 
 ## How to use
@@ -178,6 +178,3 @@ example
        </body>
    </html>
 ```
-
-
-

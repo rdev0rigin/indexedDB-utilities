@@ -12,7 +12,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/rdev0rigin/indexDB-utilities.git"
+    "url": "git+https://github.com/rdev0rigin/indexedDB-utilities.git"
   },
   "keywords": [
     "idb",
@@ -22,9 +22,9 @@
   "author": "Rob \"Rex\" Beatie (rdev1163@outlook.com)",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/rdev0rigin/indexDB-utilities/issues"
+    "url": "https://github.com/rdev0rigin/indexedDB-utilities/issues"
   },
-  "homepage": "https://github.com/rdev0rigin/indexDB-utilities#readme",
+  "homepage": "https://github.com/rdev0rigin/indexedDB-utilities#readme",
   "devDependencies": {
     "source-map-loader": "^0.2.3",
     "awesome-typescript-loader": "^3.4.1",
