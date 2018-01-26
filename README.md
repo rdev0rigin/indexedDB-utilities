@@ -1,6 +1,18 @@
 # IndexDB-Utilities
 >A lightweight utility helper that opens or creates an `IndexedDB` with `objectStores` that returns a promise that resolves utility methods.
 
+## Install
+
+### NPM
+```shell
+npm i --save indexed-db-utilities
+```
+
+### Yarn
+```shell
+yarn add indexed-db-utilities
+```
+
 ## How to use
 
 Opening an instance requires a config object.
