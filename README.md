@@ -1,17 +1,25 @@
 # indexDB-utilities
->A lightweight utility helper that opens or creates an `IndexedDB` with `objectStores` that returns an object with utility methods.
+>A lightweight utility helper that opens or creates an `IndexedDB` with `objectStores` that returns a promise that resolves utility methods.
 
+## How to use
 
-# Browser
+Opening an instance requires a config object,
 
-TODO
+```typescript
+const config: {
+    version: Number
+    dbName: String
+    storeNames: String[]
+    keyPath?: String
+}
+```
 
-# ES6
+Call `openIDBUtilities(config)` to return a promise holding an `IDBUtility` instance.  and return a promise that holds an
+Object with helper methods, add(), put(), update(), get() and remove(). If one doesn't exist then it will be made.
+Note: Once the dbName is declared with an instance the keyPath is then tied to it and cannot change without changing
+the version number
 
-TODO
-
-
-# TypeScript
+## TypeScript
 
 ```typescript
 
@@ -116,3 +124,60 @@ demo()
 	.then(res => console.log('response', res))
 	.catch(err => console.log('Error: ', err));
 ```
+
+## ES6
+
+```javascript
+
+import { openIDBUtilities } from 'indexed-db-utilities/dist/utilities/index-db.utility';
+
+ async function offlineCache() {
+    const cache = await openIDBUtilities({
+        version: 1,
+        dbName: 'DemoIDB-1',
+        storeNames: ['demoStore0', 'demoStore1'],
+        keyPath: 'myKey'
+    });
+
+    cache.add('demoStore1', {myKey: 'foo', bat: 'squeak'}); // addResponse === 'foo'
+}
+
+```
+
+## Browser
+
+Place a `<script src="/node_models/indexed-dv-utilities"></script>` inside of your document.
+
+example
+```html
+   <!DOCTYPE html>
+   <html lang="en">
+       <head>
+           <meta charset="UTF-8">
+           <title>Demo</title>
+       </head>
+       <body>
+           <h1>Demo</h1>
+           <script src="/node_modules/indexed-db-utilities/dist/indexed-db-utilities.js"></script>
+           <script>
+               const stores = openIDBUtilities({
+                   version: 1,
+                   dbName: 'DemoIDB-1',
+                   storeNames: ['demoStore0', 'demoStore1'],
+                   keyPath: 'myKey'
+               });
+               stores.then(db => {
+                   // call helper methods on the resolved object
+
+                   const addResponse = db.add('demoStore1', {myKey: 'foo', bat: 'squeak'}); // addResponse === 'foo'
+                   console.log('addResponse', addResponse);
+
+               });
+
+           </script>
+       </body>
+   </html>
+```
+
+
+

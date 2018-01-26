@@ -68,18 +68,68 @@
 				<blockquote>
 					<p>A lightweight utility helper that opens or creates an <code>IndexedDB</code> with <code>objectStores</code> that returns an object with utility methods.</p>
 				</blockquote>
-				<h1 id="browser">Browser</h1>
-				<p>TODO</p>
+				<h2 id="how-to-use">How to use</h2>
+				<p>Opening an instance requires a config object,</p>
+				<pre><code class="lang-typescript">
+<span class="hljs-keyword">const</span> config: {
+    version: <span class="hljs-built_in">Number</span>
+    dbName: <span class="hljs-built_in">String</span>
+    storeNames: <span class="hljs-built_in">String</span>[]
+    keyPath?: <span class="hljs-built_in">String</span>
+}
+</code></pre>
+				<p>Call <code>openIDBUtilities(config)</code> with config parameters to open an IndexedDB instance and return a promise that holds an
+					Object with helper methods, add(), put(), update(), get() and remove(). If one doesn&#39;t exist then it will be made.
+					Note: Once the dbName is declared with an instance the keyPath is then tied to it and cannot change without changing
+				the version number</p>
+				<h2 id="browser">Browser</h2>
+				<p>Place a <code>&lt;script src=&quot;/node_models/indexed-dv-utilities&quot;&gt;&lt;/script&gt;</code> inside of your document.</p>
+				<p>example</p>
+				<pre><code class="lang-html">    <span class="hljs-tag">&lt;<span class="hljs-name">body</span>&gt;</span>
+
+        ...html stuff
+
+        <span class="hljs-tag">&lt;<span class="hljs-name">script</span> <span class="hljs-attr">src</span>=<span class="hljs-string">"/node_models/indexed-dv-utilities"</span>&gt;</span><span class="undefined"></span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">script</span>&gt;</span><span class="javascript">
+            <span class="hljs-comment">// openIDBUtilities(config) returns a promise</span>
+             <span class="hljs-keyword">const</span> stores = openIDBUtilities({
+                    <span class="hljs-attr">version</span>: <span class="hljs-number">1</span>,
+                    <span class="hljs-attr">dbName</span>: <span class="hljs-string">'DemoIDB-1'</span>,
+                    <span class="hljs-attr">storeNames</span>: [<span class="hljs-string">'demoStore0'</span>, <span class="hljs-string">'demoStore1'</span>],
+                    <span class="hljs-attr">keyPath</span>: <span class="hljs-string">'myKey'</span>
+                });
+            stores.then(<span class="hljs-function"><span class="hljs-params">db</span> =&gt;</span> {
+                <span class="hljs-comment">// call helper methods on the resolved object</span>
+
+                <span class="hljs-keyword">const</span> addResponse = db.add(<span class="hljs-string">'demoStore1'</span>, {<span class="hljs-attr">myKey</span>: <span class="hljs-string">'foo'</span>, <span class="hljs-attr">bat</span>: <span class="hljs-string">'squeak'</span>}); <span class="hljs-comment">// addResponse === 'foo'</span>
+
+            });
+        </span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span>
+    <span class="hljs-tag">&lt;/<span class="hljs-name">body</span>&gt;</span>
+</code></pre>
 				<h1 id="es6">ES6</h1>
-				<p>TODO</p>
+				<pre><code class="lang-javascript">
+<span class="hljs-keyword">import</span> { openIDBUtilities } <span class="hljs-keyword">from</span> <span class="hljs-string">'indexed-db-utilities/dist/utilities/index-db.utility'</span>;
+
+ <span class="hljs-keyword">async</span> <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">offlineCache</span>(<span class="hljs-params"></span>) </span>{
+    <span class="hljs-keyword">const</span> cache = <span class="hljs-keyword">await</span> openIDBUtilities({
+        <span class="hljs-attr">version</span>: <span class="hljs-number">1</span>,
+        <span class="hljs-attr">dbName</span>: <span class="hljs-string">'DemoIDB-1'</span>,
+        <span class="hljs-attr">storeNames</span>: [<span class="hljs-string">'demoStore0'</span>, <span class="hljs-string">'demoStore1'</span>],
+        <span class="hljs-attr">keyPath</span>: <span class="hljs-string">'myKey'</span>
+    });
+
+    cache.add(<span class="hljs-string">'demoStore1'</span>, {<span class="hljs-attr">myKey</span>: <span class="hljs-string">'foo'</span>, <span class="hljs-attr">bat</span>: <span class="hljs-string">'squeak'</span>}); <span class="hljs-comment">// addResponse === 'foo'</span>
+</code></pre>
 				<h1 id="typescript">TypeScript</h1>
-				<pre><code class="lang-typescript"><span class="hljs-keyword">import</span> {openIDBUtilities} <span class="hljs-keyword">from</span> <span class="hljs-string">"../utilities/index-db.utility"</span>;
+				<pre><code class="lang-typescript">
+<span class="hljs-keyword">import</span> { openIDBUtilities } <span class="hljs-keyword">from</span> <span class="hljs-string">'indexed-db-utilities/dist/utilities/index-db.utility'</span>;
 
 <span class="hljs-keyword">async</span> <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">demo</span>(<span class="hljs-params"></span>) </span>{
 
     <span class="hljs-comment">/**
     *
-    * Call iDBU(config) with config parameters to open an IndexedDB and return a promise that holds
+    * Call openIDBUtilities(config) with config parameters to open an IndexedDB and return a promise that holds
     * an Object with helper methods, add(), put(), update(), get() and remove().
     * if one doesn't exsist then it will be made. Note: Once ObjectStores are defined they
     * IDBs version number and to add more you must provide a new version number.
@@ -94,7 +144,7 @@
     **/</span>
 
     <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'calling open'</span>);
-    <span class="hljs-keyword">const</span> stores = <span class="hljs-keyword">await</span> openIDB({
+    <span class="hljs-keyword">const</span> stores = <span class="hljs-keyword">await</span> openIDBUtilities({
         version: <span class="hljs-number">1</span>, <span class="hljs-comment">// Numbers should be a positive Number and not contain any decimal digits.</span>
         dbName: <span class="hljs-string">'DemoIDB-1'</span>,
         storeNames: [<span class="hljs-string">'demoStore0'</span>, <span class="hljs-string">'demoStore1'</span>], <span class="hljs-comment">// Provide and array of the storeNames in which you wish to store values in.</span>
@@ -111,7 +161,7 @@
     <span class="hljs-string">'demoStore0'</span>,
     {
         myKey: <span class="hljs-string">'foo'</span>,
-        value: [{ bat: <span class="hljs-string">'squeek'</span>}, {bear: <span class="hljs-string">'grrr'</span>}]
+        value: [{ bat: <span class="hljs-string">'squeak'</span>}, {bear: <span class="hljs-string">'grrr'</span>}]
     })
         .catch(<span class="hljs-function"><span class="hljs-params">err</span> =&gt;</span> <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'Add Error'</span>, err));
     <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'add response'</span>, addResponse); <span class="hljs-comment">// add response foo</span>
@@ -123,7 +173,7 @@
     */</span>
     <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'calling get'</span>);
     <span class="hljs-keyword">let</span> getResponse = <span class="hljs-keyword">await</span> stores.get(<span class="hljs-string">'demoStore0'</span>, <span class="hljs-string">'foo'</span>);
-    <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'get response'</span>, getResponse); <span class="hljs-comment">// get response {myKey:'foo', value: [{ bat: 'squeek'}, {bear: 'grrr'}]}</span>
+    <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'get response'</span>, getResponse); <span class="hljs-comment">// get response {myKey:'foo', value: [{ bat: 'squeak'}, {bear: 'grrr'}]}</span>
 
     <span class="hljs-comment">/**
     *  put(storeName: string, value: any) =&gt; Promise&lt;string | {}&gt;;
@@ -154,11 +204,11 @@
     <span class="hljs-string">'foo'</span>,
     {
         myKey: <span class="hljs-string">'foo'</span>,
-        value: [{ bat: <span class="hljs-string">'squeek'</span>}, {bear: <span class="hljs-string">'grrr'</span>, dog: [<span class="hljs-string">'woof'</span>, <span class="hljs-string">'bark'</span>]}, {cat: <span class="hljs-string">'purr'</span>}, [<span class="hljs-string">'happy hacking!'</span>]]
+        value: [{ bat: <span class="hljs-string">'squeak'</span>}, {bear: <span class="hljs-string">'grrr'</span>, dog: [<span class="hljs-string">'woof'</span>, <span class="hljs-string">'bark'</span>]}, {cat: <span class="hljs-string">'purr'</span>}, [<span class="hljs-string">'happy hacking!'</span>]]
     });
     <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'update response'</span>, updateResponse); <span class="hljs-comment">// update response foo</span>
     getResponse = <span class="hljs-keyword">await</span> stores.get(<span class="hljs-string">'demoStore0'</span>, <span class="hljs-string">'foo'</span>);
-    <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'get response'</span>, getResponse); <span class="hljs-comment">// get response {myKey:'foo', value: [{cat: 'meow'}, { bat: 'squeek'}, {bear: 'grrr', dog: ['woof', 'bark']}, {cat: 'purr'}, ['happy hacking!']]}</span>
+    <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'get response'</span>, getResponse); <span class="hljs-comment">// get response {myKey:'foo', value: [{cat: 'meow'}, { bat: 'squeak'}, {bear: 'grrr', dog: ['woof', 'bark']}, {cat: 'purr'}, ['happy hacking!']]}</span>
 
     <span class="hljs-comment">/**
     *  remove(storeName: string, key: string) =&gt; Promise&lt;any&gt;;
