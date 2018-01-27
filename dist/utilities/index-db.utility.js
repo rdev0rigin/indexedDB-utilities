@@ -42,41 +42,65 @@ var openIDB = function (config) { return __awaiter(_this, void 0, void 0, functi
         }
         return [2 /*return*/, new Promise(function (resolve, reject) {
                 var request = indexedDB.open(config.dbName, config.version);
-                request.onerror = function (evt) {
+                request.onerror = function () {
                     reject(request.result);
                 };
-                // noinspection TsLint
                 request.onupgradeneeded = function (evt) {
-                    onUpgradeHandler(evt, config);
+                    var nextDb = evt.target.result;
+                    console.log('nextDB', nextDb);
+                    var newStores = config.storeNames
+                        .filter(function (value, i) { return value !== nextDb.objectStoreNames[i]; });
+                    if (config.keyPath) {
+                        newStores
+                            .forEach(function (storeName) {
+                            nextDb.createObjectStore(storeName, {
+                                keyPath: config.keyPath
+                            });
+                        });
+                    }
+                    else {
+                        newStores
+                            .forEach(function (storeName) {
+                            nextDb.createObjectStore(storeName, {
+                                autoIncrement: true
+                            });
+                        });
+                    }
                 };
-                request.onsuccess = function (evt) {
+                request.onsuccess = function () {
                     var db = request.result;
                     resolve({
                         add: function (storeName, value) {
                             return __awaiter(this, void 0, void 0, function () {
-                                var request;
                                 return __generator(this, function (_a) {
-                                    request = db.transaction([storeName], 'readwrite')
-                                        .objectStore("" + storeName)
-                                        .add(value);
-                                    if (request.isValid()) {
-                                        return [2 /*return*/, request.result];
-                                    }
-                                    return [2 /*return*/, Promise.reject(request.result)];
+                                    return [2 /*return*/, new Promise(function (res, rej) {
+                                            var request = db.transaction([storeName], 'readwrite')
+                                                .objectStore("" + storeName)
+                                                .add(value);
+                                            request.onsuccess = function (evt) {
+                                                res(request.result);
+                                            };
+                                            request.onerror = function () {
+                                                rej(request.result);
+                                            };
+                                        })];
                                 });
                             });
                         },
                         put: function (storeName, value) {
                             return __awaiter(this, void 0, void 0, function () {
-                                var request;
                                 return __generator(this, function (_a) {
-                                    request = db.transaction([storeName], 'readwrite')
-                                        .objectStore(storeName)
-                                        .put(value);
-                                    if (request.isValid()) {
-                                        return [2 /*return*/, request.result];
-                                    }
-                                    return [2 /*return*/, Promise.reject(request.result)];
+                                    return [2 /*return*/, new Promise(function (res, rej) {
+                                            var request = db.transaction([storeName], 'readwrite')
+                                                .objectStore(storeName)
+                                                .put(value);
+                                            request.onsuccess = function () {
+                                                res(request.result);
+                                            };
+                                            request.onerror = function () {
+                                                rej(request.result);
+                                            };
+                                        })];
                                 });
                             });
                         },
@@ -149,25 +173,6 @@ var openIDB = function (config) { return __awaiter(_this, void 0, void 0, functi
             })];
     });
 }); };
-function onUpgradeHandler(evt, config) {
-    var nextDb = evt.target.result;
-    if (config.keyPath) {
-        config.storeNames
-            .forEach(function (storeName) {
-            nextDb.createObjectStore(storeName, {
-                keyPath: config.keyPath
-            });
-        });
-    }
-    else {
-        config.storeNames
-            .forEach(function (storeName) {
-            nextDb.createObjectStore(storeName, {
-                autoIncrement: true
-            });
-        });
-    }
-}
 // https://stackoverflow.com/a/48275932/7473184
 function mergeDeep(target, source) {
     if (typeof target === "object" && typeof source === "object") {

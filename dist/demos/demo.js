@@ -58,9 +58,9 @@ function demo() {
                      **/
                     console.log('calling open');
                     return [4 /*yield*/, openIDBUtilities({
-                            version: 1,
-                            dbName: 'DemoIDB-1',
-                            storeNames: ['demoStore0', 'demoStore1'],
+                            version: 3,
+                            dbName: 'DemoIDB-2',
+                            storeNames: ['demoStore0', 'demoStore1', "demoStore2"],
                             keyPath: 'myKey' // keyPath is optional, if provided this will be how you get selective values from the stores and must be a property in your object value you wish to store. If omitted the stores will be indexed 0 to (n-1);
                         })];
                 case 1:
@@ -72,11 +72,11 @@ function demo() {
                      * 	Note: You cannot add new values to objects with keys that already exsist, use put() or update().
                      */
                     console.log('calling add');
-                    return [4 /*yield*/, stores.add('demoStore3', {
-                            // myKey: 'foo',
+                    return [4 /*yield*/, stores.add('demoStore0', {
+                            myKey: 'foo',
                             value: [{ bat: 'squeak' }, { bear: 'grrr' }]
                         })
-                            .catch(function (err) { return console.log('Add Error', err); })];
+                            .catch(function (err) { return console.log('Add Error: ', err); })];
                 case 2:
                     addResponse = _a.sent();
                     console.log('add response', addResponse); // add response foo
@@ -99,7 +99,8 @@ function demo() {
                     return [4 /*yield*/, stores.put('demoStore0', {
                             myKey: 'foo',
                             value: [{ cat: 'meow' }]
-                        })];
+                        })
+                            .catch(function (err) { return "Put Error: " + err; })];
                 case 4:
                     putResponse = _a.sent();
                     console.log('put response', putResponse); // put response foo
@@ -117,7 +118,8 @@ function demo() {
                     return [4 /*yield*/, stores.update('demoStore0', 'foo', {
                             myKey: 'foo',
                             value: [{ bat: 'squeak' }, { bear: 'grrr', dog: ['woof', 'bark'] }, { cat: 'purr' }, ['happy hacking!']]
-                        })];
+                        })
+                            .catch(function (err) { return "Update Error: " + err; })];
                 case 6:
                     updateResponse = _a.sent();
                     console.log('update response', updateResponse); // update response foo

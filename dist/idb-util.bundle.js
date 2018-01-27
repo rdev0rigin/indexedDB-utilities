@@ -124,13 +124,16 @@ var openIDB = function (config) { return __awaiter(_this, void 0, void 0, functi
         }
         return [2 /*return*/, new Promise(function (resolve, reject) {
                 var request = indexedDB.open(config.dbName, config.version);
-                request.onerror = function (evt) {
+                request.onerror = function () {
                     reject(request.result);
                 };
                 request.onupgradeneeded = function (evt) {
                     var nextDb = evt.target.result;
+                    console.log('nextDB', nextDb);
+                    var newStores = config.storeNames
+                        .filter(function (value, i) { return value !== nextDb.objectStoreNames[i]; });
                     if (config.keyPath) {
-                        config.storeNames
+                        newStores
                             .forEach(function (storeName) {
                             nextDb.createObjectStore(storeName, {
                                 keyPath: config.keyPath
@@ -138,7 +141,7 @@ var openIDB = function (config) { return __awaiter(_this, void 0, void 0, functi
                         });
                     }
                     else {
-                        config.storeNames
+                        newStores
                             .forEach(function (storeName) {
                             nextDb.createObjectStore(storeName, {
                                 autoIncrement: true
@@ -146,7 +149,7 @@ var openIDB = function (config) { return __awaiter(_this, void 0, void 0, functi
                         });
                     }
                 };
-                request.onsuccess = function (evt) {
+                request.onsuccess = function () {
                     var db = request.result;
                     resolve({
                         add: function (storeName, value) {
