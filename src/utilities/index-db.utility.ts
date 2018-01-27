@@ -13,7 +13,6 @@ const openIDB = async (config: IDBUConfigModel): Promise<IDBUtility> => {
 		};
 		request.onupgradeneeded = (evt: IDBVersionChangeEvent | any): void => {
 			const nextDb = evt.target.result;
-			console.log('nextDB', nextDb);
 			const newStores: string[] = config.storeNames
 				.filter((value, i) => value !== nextDb.objectStoreNames[i]);
 			if(config.keyPath){

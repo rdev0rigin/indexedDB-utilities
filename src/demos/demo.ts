@@ -42,6 +42,7 @@ async function demo() {
 		})
 		.catch(err => console.log('Add Error: ', err));
 	console.log('add response', addResponse); // add response foo
+
 	/**
 	 *  get(storeName: string, key: string) => Promise<any>;
 	 *  returns the value stored that matches the value stored in [keyPath]: String
