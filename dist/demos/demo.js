@@ -72,9 +72,9 @@ function demo() {
                      * 	Note: You cannot add new values to objects with keys that already exsist, use put() or update().
                      */
                     console.log('calling add');
-                    return [4 /*yield*/, stores.add('demoStore0', {
-                            myKey: 'foo',
-                            value: [{ bat: 'squeek' }, { bear: 'grrr' }]
+                    return [4 /*yield*/, stores.add('demoStore3', {
+                            // myKey: 'foo',
+                            value: [{ bat: 'squeak' }, { bear: 'grrr' }]
                         })
                             .catch(function (err) { return console.log('Add Error', err); })];
                 case 2:
@@ -89,7 +89,7 @@ function demo() {
                     return [4 /*yield*/, stores.get('demoStore0', 'foo')];
                 case 3:
                     getResponse = _a.sent();
-                    console.log('get response', getResponse); // get response {myKey:'foo', value: [{ bat: 'squeek'}, {bear: 'grrr'}]}
+                    console.log('get response', getResponse); // get response {myKey:'foo', value: [{ bat: 'squeak'}, {bear: 'grrr'}]}
                     /**
                      *  put(storeName: string, value: any) => Promise<string | {}>;
                      *  returns a string with the saved value's key or throws Request.Result Object.

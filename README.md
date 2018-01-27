@@ -54,7 +54,7 @@ async function demo() {
     *
     * Call openIDBUtilities(config) with config parameters to open an IndexedDB and return a promise that holds
     * an Object with helper methods, add(), put(), update(), get() and remove().
-    * if one doesn't exsist then it will be made. Note: Once ObjectStores are defined they
+    * if one doesn't exist then it will be made. Note: Once ObjectStores are defined they
     * IDBs version number and to add more you must provide a new version number.
     *
     *  The Config Object = {

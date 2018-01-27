@@ -21,12 +21,13 @@ async function demo() {
 
 	console.log('calling open');
 	const stores = await openIDBUtilities({
-		version: 1, // Numbers should be a positive Number and not contain any decimal digits.
-		dbName: 'DemoIDB-1',
-		storeNames: ['demoStore0', 'demoStore1'], // Provide and array of the storeNames in which you wish to store values in.
+		version: 3, // Numbers should be a positive Number and not contain any decimal digits.
+		dbName: 'DemoIDB-2',
+		storeNames: ['demoStore0', 'demoStore1', "demoStore2"], // Provide and array of the storeNames in which you wish to store values in.
 		keyPath: 'myKey' // keyPath is optional, if provided this will be how you get selective values from the stores and must be a property in your object value you wish to store. If omitted the stores will be indexed 0 to (n-1);
 	});
 	console.log('stores', stores);
+
 	/**
 	 * 	add(storeName: string, value: any) => Promise<string | {}>;
 	 * 	returns a string with the saved value's key or Request.Result Object.
@@ -39,9 +40,8 @@ async function demo() {
 			myKey: 'foo',
 			value: [{ bat: 'squeak'}, {bear: 'grrr'}]
 		})
-		.catch(err => console.log('Add Error', err));
+		.catch(err => console.log('Add Error: ', err));
 	console.log('add response', addResponse); // add response foo
-
 	/**
 	 *  get(storeName: string, key: string) => Promise<any>;
 	 *  returns the value stored that matches the value stored in [keyPath]: String
@@ -62,7 +62,8 @@ async function demo() {
 		{
 			myKey: 'foo',
 			value: [{ cat: 'meow'}]
-		});
+		})
+		.catch( err => `Put Error: ${err}`);
 
 	console.log('put response', putResponse); // put response foo
 	getResponse = await stores.get('demoStore0', 'foo');
@@ -81,7 +82,8 @@ async function demo() {
 		{
 			myKey: 'foo',
 			value: [{ bat: 'squeak'}, {bear: 'grrr', dog: ['woof', 'bark']}, {cat: 'purr'}, ['happy hacking!']]
-		});
+		})
+		.catch( err => `Update Error: ${err}`);
 	console.log('update response', updateResponse); // update response foo
 	getResponse = await stores.get('demoStore0', 'foo');
 	console.log('get response', getResponse); // get response {myKey:'foo', value: [{cat: 'meow'}, { bat: 'squeak'}, {bear: 'grrr', dog: ['woof', 'bark']}, {cat: 'purr'}, ['happy hacking!']]}

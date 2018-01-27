@@ -45,59 +45,38 @@ var openIDB = function (config) { return __awaiter(_this, void 0, void 0, functi
                 request.onerror = function (evt) {
                     reject(request.result);
                 };
+                // noinspection TsLint
                 request.onupgradeneeded = function (evt) {
-                    var nextDb = evt.target.result;
-                    if (config.keyPath) {
-                        config.storeNames
-                            .forEach(function (storeName) {
-                            nextDb.createObjectStore(storeName, {
-                                keyPath: config.keyPath
-                            });
-                        });
-                    }
-                    else {
-                        config.storeNames
-                            .forEach(function (storeName) {
-                            nextDb.createObjectStore(storeName, {
-                                autoIncrement: true
-                            });
-                        });
-                    }
+                    onUpgradeHandler(evt, config);
                 };
                 request.onsuccess = function (evt) {
                     var db = request.result;
                     resolve({
                         add: function (storeName, value) {
                             return __awaiter(this, void 0, void 0, function () {
+                                var request;
                                 return __generator(this, function (_a) {
-                                    return [2 /*return*/, new Promise(function (res, rej) {
-                                            var request = db.transaction([storeName], 'readwrite')
-                                                .objectStore("" + storeName)
-                                                .add(value);
-                                            request.onsuccess = function (evt) {
-                                                res(request.result);
-                                            };
-                                            request.onerror = function () {
-                                                rej(request.result);
-                                            };
-                                        })];
+                                    request = db.transaction([storeName], 'readwrite')
+                                        .objectStore("" + storeName)
+                                        .add(value);
+                                    if (request.isValid()) {
+                                        return [2 /*return*/, request.result];
+                                    }
+                                    return [2 /*return*/, Promise.reject(request.result)];
                                 });
                             });
                         },
                         put: function (storeName, value) {
                             return __awaiter(this, void 0, void 0, function () {
+                                var request;
                                 return __generator(this, function (_a) {
-                                    return [2 /*return*/, new Promise(function (res, rej) {
-                                            var request = db.transaction([storeName], 'readwrite')
-                                                .objectStore(storeName)
-                                                .put(value);
-                                            request.onsuccess = function () {
-                                                res(request.result);
-                                            };
-                                            request.onerror = function () {
-                                                rej(request.result);
-                                            };
-                                        })];
+                                    request = db.transaction([storeName], 'readwrite')
+                                        .objectStore(storeName)
+                                        .put(value);
+                                    if (request.isValid()) {
+                                        return [2 /*return*/, request.result];
+                                    }
+                                    return [2 /*return*/, Promise.reject(request.result)];
                                 });
                             });
                         },
@@ -170,6 +149,25 @@ var openIDB = function (config) { return __awaiter(_this, void 0, void 0, functi
             })];
     });
 }); };
+function onUpgradeHandler(evt, config) {
+    var nextDb = evt.target.result;
+    if (config.keyPath) {
+        config.storeNames
+            .forEach(function (storeName) {
+            nextDb.createObjectStore(storeName, {
+                keyPath: config.keyPath
+            });
+        });
+    }
+    else {
+        config.storeNames
+            .forEach(function (storeName) {
+            nextDb.createObjectStore(storeName, {
+                autoIncrement: true
+            });
+        });
+    }
+}
 // https://stackoverflow.com/a/48275932/7473184
 function mergeDeep(target, source) {
     if (typeof target === "object" && typeof source === "object") {

@@ -8,13 +8,16 @@ const openIDB = async (config: IDBUConfigModel): Promise<IDBUtility> => {
 	}
 	return new Promise<IDBUtility>((resolve, reject) => {
 		const request = indexedDB.open(config.dbName, config.version);
-		request.onerror = (evt: ErrorEvent | any) => {
+		request.onerror = () => {
 			reject(request.result);
 		};
 		request.onupgradeneeded = (evt: IDBVersionChangeEvent | any): void => {
 			const nextDb = evt.target.result;
+			console.log('nextDB', nextDb);
+			const newStores: string[] = config.storeNames
+				.filter((value, i) => value !== nextDb.objectStoreNames[i]);
 			if(config.keyPath){
-				config.storeNames
+				newStores
 					.forEach((storeName: string) => {
 						nextDb.createObjectStore(
 							storeName,
@@ -24,7 +27,7 @@ const openIDB = async (config: IDBUConfigModel): Promise<IDBUtility> => {
 						);
 					});
 			} else {
-				config.storeNames
+				newStores
 					.forEach((storeName: string) => {
 						nextDb.createObjectStore(
 							storeName,
@@ -35,7 +38,7 @@ const openIDB = async (config: IDBUConfigModel): Promise<IDBUtility> => {
 					});
 			}
 		};
-		request.onsuccess = (evt) => {
+		request.onsuccess = () => {
 			const db = request.result;
 			resolve({
 				async add(storeName: string, value: {}): Promise<string | {}> {
@@ -127,8 +130,8 @@ function mergeDeep (target, source)  {
 		for (const key in source) {
 			if (source[key] === null
 				&& (target[key] === undefined
-				|| target[key] === null)) {
-					target[key] = null;
+					|| target[key] === null)) {
+				target[key] = null;
 			} else if (source[key] instanceof Array) {
 				if (!target[key]) target[key] = [];
 				target[key] = target[key]
