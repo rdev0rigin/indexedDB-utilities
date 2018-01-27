@@ -6,9 +6,9 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "bundle": "webpack --config webpack.config.js",
-    "build": "tsc && npx babel dist/utilities/index-db.utility.js --out-file dist/idb-util.js && browserify dist/idb-util.js -o dist/idb-util.js",
-    "demo": "webpack --config webpack.demo.config.js --watch",
-    "docs": "typedoc ./src/indexed-db-utilities.ts --out ./docs/"
+    "demo": "webpack --config webpack.demo.config.js",
+    "docs": "typedoc ./src/indexed-db-utilities.ts --out ./docs/",
+    "build-prod": "npm run bundle && npm run demo && npm run docs && tsc"
   },
   "repository": {
     "type": "git",

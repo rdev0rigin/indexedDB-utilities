@@ -129,7 +129,6 @@ var openIDB = function (config) { return __awaiter(_this, void 0, void 0, functi
                 };
                 request.onupgradeneeded = function (evt) {
                     var nextDb = evt.target.result;
-                    console.log('nextDB', nextDb);
                     var newStores = config.storeNames
                         .filter(function (value, i) { return value !== nextDb.objectStoreNames[i]; });
                     if (config.keyPath) {
