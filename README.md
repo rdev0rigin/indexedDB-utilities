@@ -36,7 +36,8 @@ const IDBUtility: {
     add: (storeName: string, value: {}) => Promise<string | Request.result>;
     put: (storeName: string, value: {}) => Promise<string | Request.result>;
     update: (storeName: string, keyValue: string, value: {}) => Promise<string | Request.result>;
-    get: (storeName: string, keyValue: string) => Promise<any | {[keyPath]: string , ...{}} | Request.result>;
+    get: (storeName: string, keyValue: string) => Promise<{[keyPath]: string , ...{}} | Request.result>;
+    getAll: (storeName: string) => Promise<{}>;
     remove: (storeName: string, keyValue: string) => Promise<void | Request.result>;
 }
 
@@ -66,20 +67,18 @@ async function demo() {
     *
     **/
 
-    console.log('calling open');
     const stores = await openIDBUtilities({
         version: 1, // Numbers should be a positive Number and not contain any decimal digits.
         dbName: 'DemoIDB-1',
         storeNames: ['demoStore0', 'demoStore1'], // Provide and array of the storeNames in which you wish to store values in.
         keyPath: 'myKey' // keyPath is optional, if provided this will be how you get selective values from the stores and must be a property in your object value you wish to store. If omitted the stores will be indexed 0 to (n-1);
     });
-    console.log('stores', stores);
+
     /**
     * 	add(storeName: string, value: any) => Promise<string | {}>;
     * 	returns a string with the saved value's key or Request.Result Object.
     * 	Note: You cannot add new values to objects with keys that already exsist, use put() or update().
     */
-    console.log('calling add');
     const addResponse = await stores.add(
     'demoStore0',
     {
@@ -87,23 +86,19 @@ async function demo() {
         value: [{ bat: 'squeak'}, {bear: 'grrr'}]
     })
         .catch(err => console.log('Add Error', err));
-    console.log('add response', addResponse); // add response foo
 
     /**
     *  get(storeName: string, key: string) => Promise<any>;
     *  returns the value stored that matches the value stored in [keyPath]: String
     *  or throws an Request.Result Object
     */
-    console.log('calling get');
     let getResponse = await stores.get('demoStore0', 'foo');
-    console.log('get response', getResponse); // get response {myKey:'foo', value: [{ bat: 'squeak'}, {bear: 'grrr'}]}
 
     /**
     *  put(storeName: string, value: any) => Promise<string | {}>;
     *  returns a string with the saved value's key or throws Request.Result Object.
     *  Note: This will overwrite your value saved related your key.
     */
-    console.log('calling put');
     const putResponse = await stores.put(
     'demoStore0',
     {
@@ -111,17 +106,13 @@ async function demo() {
         value: [{ cat: 'meow'}]
     });
 
-    console.log('put response', putResponse); // put response foo
-    getResponse = await stores.get('demoStore0', 'foo');
-    console.log('get response', getResponse); // {myKey:'foo', value: [{cat: 'meow'}]}
 
     /**
     *  update(storeName: string, key: string, value: any) => Promise<string | {}>;
     *  returns a string with the updated value's key or throws an Request.Result Object.
     *  Note: This will merge with your stored value, if it is an array it will concatenate
     *  the new values.
-    */
-    console.log('calling update');
+    */    
     const updateResponse = await stores.update(
     'demoStore0',
     'foo',
@@ -129,23 +120,26 @@ async function demo() {
         myKey: 'foo',
         value: [{ bat: 'squeak'}, {bear: 'grrr', dog: ['woof', 'bark']}, {cat: 'purr'}, ['happy hacking!']]
     });
-    console.log('update response', updateResponse); // update response foo
-    getResponse = await stores.get('demoStore0', 'foo');
-    console.log('get response', getResponse); // get response {myKey:'foo', value: [{cat: 'meow'}, { bat: 'squeak'}, {bear: 'grrr', dog: ['woof', 'bark']}, {cat: 'purr'}, ['happy hacking!']]}
-
+    
+    /**
+    * getAll (storeName: string) => Promise<{}>
+    * Returns all values in the store.
+    */
+    for (let i = 0; i < 10; i++) {
+        await stores.put('demoStore0', {
+            myKey: i.toString(),
+            value: i
+        })
+    }
+    const getAllResponse = await stores.getAll('demoStore0');
+    
     /**
     *  remove(storeName: string, key: string) => Promise<any>;
     *  returns void or throws an Request.Result Object
     */
-    console.log('calling remove');
     const removeResponse = await stores.remove('demoStore0', 'foo')
-        .catch(err => console.log('remove error', err));
-	console.log('removeResponse', removeResponse); // removeResponse undefined
+        .catch(err => console.log('remove error', err)); // removeResponse undefined
 }
-console.log('calling demo');
-demo()
-	.then(res => console.log('response', res))
-	.catch(err => console.log('Error: ', err));
 ```
 
 ## ES6

@@ -109,7 +109,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 
 function demo() {
     return __awaiter(this, void 0, void 0, function () {
-        var stores, addResponse, getResponse, putResponse, updateResponse, removeResponse;
+        var stores, addResponse, getResponse, putResponse, updateResponse, i, getAllResponse, removeResponse;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
@@ -140,7 +140,7 @@ function demo() {
                     console.log('stores', stores);
                     /**
                      * 	add(storeName: string, value: any) => Promise<string | {}>;
-                     * 	returns a string with the saved value's key or Request.Result Object.
+                     * 	Returns a string with the saved value's key or Request.Result Object.
                      * 	Note: You cannot add new values to objects with keys that already exsist, use put() or update().
                      */
                     console.log('calling add');
@@ -154,7 +154,7 @@ function demo() {
                     console.log('add response', addResponse); // add response foo
                     /**
                      *  get(storeName: string, key: string) => Promise<any>;
-                     *  returns the value stored that matches the value stored in [keyPath]: String
+                     *  Returns the value stored that matches the value stored in [keyPath]: String
                      *  or throws an Request.Result Object
                      */
                     console.log('calling get');
@@ -164,7 +164,7 @@ function demo() {
                     console.log('get response', getResponse); // get response {myKey:'foo', value: [{ bat: 'squeak'}, {bear: 'grrr'}]}
                     /**
                      *  put(storeName: string, value: any) => Promise<string | {}>;
-                     *  returns a string with the saved value's key or throws Request.Result Object.
+                     *  Returns a string with the saved value's key or throws Request.Result Object.
                      *  Note: This will overwrite your value saved related your key.
                      */
                     console.log('calling put');
@@ -182,7 +182,7 @@ function demo() {
                     console.log('get response', getResponse); // {myKey:'foo', value: [{cat: 'meow'}]}
                     /**
                      *  update(storeName: string, key: string, value: any) => Promise<string | {}>;
-                     *  returns a string with the updated value's key or throws an Request.Result Object.
+                     *  Returns a string with the updated value's key or throws an Request.Result Object.
                      *  Note: This will merge with your stored value, if it is an array it will concatenate
                      *  the new values.
                      */
@@ -199,6 +199,24 @@ function demo() {
                 case 7:
                     getResponse = _a.sent();
                     console.log('get response', getResponse); // get response {myKey:'foo', value: [{cat: 'meow'}, { bat: 'squeak'}, {bear: 'grrr', dog: ['woof', 'bark']}, {cat: 'purr'}, ['happy hacking!']]}
+                    i = 0;
+                    _a.label = 8;
+                case 8:
+                    if (!(i < 10)) return [3 /*break*/, 11];
+                    return [4 /*yield*/, stores.put('demoStore0', {
+                            myKey: i.toString(),
+                            value: i
+                        })];
+                case 9:
+                    _a.sent();
+                    _a.label = 10;
+                case 10:
+                    i++;
+                    return [3 /*break*/, 8];
+                case 11: return [4 /*yield*/, stores.getAll('demoStore0')];
+                case 12:
+                    getAllResponse = _a.sent();
+                    console.log('getAll Response', getAllResponse);
                     /**
                      *  remove(storeName: string, key: string) => Promise<any>;
                      *  returns void or throws an Request.Result Object
@@ -206,7 +224,7 @@ function demo() {
                     console.log('calling remove');
                     return [4 /*yield*/, stores.remove('demoStore0', 'foo')
                             .catch(function (err) { return console.log('remove error', err); })];
-                case 8:
+                case 13:
                     removeResponse = _a.sent();
                     console.log('removeResponse', removeResponse); // removeResponse undefined
                     return [2 /*return*/];
@@ -226,6 +244,14 @@ demo()
 
 "use strict";
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return openIDBUtilities; });
+var __assign = (this && this.__assign) || Object.assign || function(t) {
+    for (var s, i = 1, n = arguments.length; i < n; i++) {
+        s = arguments[i];
+        for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+            t[p] = s[p];
+    }
+    return t;
+};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     return new (P || (P = Promise))(function (resolve, reject) {
         function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
@@ -394,12 +420,51 @@ var openIDB = function (config) { return __awaiter(_this, void 0, void 0, functi
                                         })];
                                 });
                             });
+                        },
+                        getAll: function (storeName) {
+                            return __awaiter(this, void 0, void 0, function () {
+                                var response;
+                                return __generator(this, function (_a) {
+                                    response = {};
+                                    return [2 /*return*/, new Promise(function (res, rej) {
+                                            var cursor = db.transaction([storeName])
+                                                .objectStore(storeName)
+                                                .openCursor();
+                                            cursor.onsuccess = function (event) {
+                                                var cursor = event.target.result;
+                                                if (cursor) {
+                                                    response = __assign({}, response, (_a = {}, _a[cursor.key] = cursor.value, _a));
+                                                    cursor.continue();
+                                                }
+                                                else {
+                                                    res(response);
+                                                }
+                                                var _a;
+                                            };
+                                            cursor.onerror = function () {
+                                                rej(request.result);
+                                            };
+                                        })];
+                                });
+                            });
                         }
                     });
                 };
             })];
     });
 }); };
+// var objectStore = db.transaction("customers").objectStore("customers");
+//
+// objectStore.openCursor().onsuccess = function(event) {
+// 	var cursor = event.target.result;
+// 	if (cursor) {
+// 		alert("Name for SSN " + cursor.key + " is " + cursor.value.name);
+// 		cursor.continue();
+// 	}
+// 	else {
+// 		alert("No more entries!");
+// 	}
+// };
 // https://stackoverflow.com/a/48275932/7473184
 function mergeDeep(target, source) {
     if (typeof target === "object" && typeof source === "object") {

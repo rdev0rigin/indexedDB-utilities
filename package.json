@@ -1,6 +1,6 @@
 {
   "name": "indexed-db-utilities",
-  "version": "2.0.8",
+  "version": "2.1.0",
   "description": "Helper methods and utilities for creating managing values dynamically for the browser's IndexDB API.",
   "main": "bundle/bundle.js",
   "scripts": {
@@ -26,8 +26,9 @@
   },
   "homepage": "https://github.com/rdev0rigin/indexedDB-utilities#readme",
   "devDependencies": {
-    "source-map-loader": "^0.2.3",
     "awesome-typescript-loader": "^3.4.1",
+    "mocha": "^5.0.0",
+    "source-map-loader": "^0.2.3",
     "tslint": "5.9.1",
     "tslint-loader": "3.5.3",
     "typescript": "^2.6.2",

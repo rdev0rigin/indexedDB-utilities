@@ -66,7 +66,7 @@ const openIDB = async (config: IDBUConfigModel): Promise<IDBUtility> => {
 						};
 					});
 				},
-				async update(storeName: string, key: string, value: ({} | any[])): Promise<string | {}> {
+				async update(storeName: string, key: string, value: any): Promise<string | {}> {
 					return new Promise((res, rej) => {
 						const transaction = db.transaction([storeName], 'readwrite');
 						const getRequest = transaction
@@ -92,7 +92,7 @@ const openIDB = async (config: IDBUConfigModel): Promise<IDBUtility> => {
 						};
 					});
 				},
-				async remove(storeName: string, keyValue: string): Promise<any> {
+				async remove(storeName: string, keyValue: string): Promise<{}> {
 					return new Promise((res, rej) => {
 						const delRequest = db.transaction([storeName], 'readwrite')
 							.objectStore(storeName)
@@ -117,11 +117,44 @@ const openIDB = async (config: IDBUConfigModel): Promise<IDBUtility> => {
 							rej(request.result);
 						};
 					});
+				},
+				async getAll(storeName: string): Promise<{}> {
+					let response = {};
+					return new Promise((res, rej) => {
+						const cursor = db.transaction([storeName])
+							.objectStore(storeName)
+							.openCursor();
+						cursor.onsuccess = (event) => {
+							const cursor = event.target.result;
+							if (cursor) {
+								response = {...response, [cursor.key]: cursor.value};
+								cursor.continue();
+							} else {
+								res(response);
+							}
+						};
+						cursor.onerror = () => {
+							rej(request.result);
+						};
+					});
 				}
 			});
 		};
 	});
 };
+
+// var objectStore = db.transaction("customers").objectStore("customers");
+//
+// objectStore.openCursor().onsuccess = function(event) {
+// 	var cursor = event.target.result;
+// 	if (cursor) {
+// 		alert("Name for SSN " + cursor.key + " is " + cursor.value.name);
+// 		cursor.continue();
+// 	}
+// 	else {
+// 		alert("No more entries!");
+// 	}
+// };
 
 // https://stackoverflow.com/a/48275932/7473184
 function mergeDeep (target, source)  {
