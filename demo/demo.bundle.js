@@ -109,7 +109,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 
 function demo() {
     return __awaiter(this, void 0, void 0, function () {
-        var stores, addResponse, getResponse, putResponse, updateResponse, i, getAllResponse, removeResponse;
+        var stores, addResponse, getResponse, putResponse, updateResponse, i, getAllResponse, removeResponse, i;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
@@ -227,7 +227,19 @@ function demo() {
                 case 13:
                     removeResponse = _a.sent();
                     console.log('removeResponse', removeResponse); // removeResponse undefined
-                    return [2 /*return*/];
+                    i = 0;
+                    _a.label = 14;
+                case 14:
+                    if (!(i < 10)) return [3 /*break*/, 17];
+                    return [4 /*yield*/, stores.remove('demoStore0', i.toString())
+                            .catch(function (err) { return console.log('Remove Error', err); })];
+                case 15:
+                    _a.sent();
+                    _a.label = 16;
+                case 16:
+                    i++;
+                    return [3 /*break*/, 14];
+                case 17: return [2 /*return*/];
             }
         });
     });

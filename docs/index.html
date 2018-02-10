@@ -93,7 +93,8 @@
     add: <span class="hljs-function">(<span class="hljs-params">storeName: <span class="hljs-built_in">string</span>, value: {}</span>) =&gt;</span> <span class="hljs-built_in">Promise</span>&lt;<span class="hljs-built_in">string</span> | Request.result&gt;;
     put: <span class="hljs-function">(<span class="hljs-params">storeName: <span class="hljs-built_in">string</span>, value: {}</span>) =&gt;</span> <span class="hljs-built_in">Promise</span>&lt;<span class="hljs-built_in">string</span> | Request.result&gt;;
     update: <span class="hljs-function">(<span class="hljs-params">storeName: <span class="hljs-built_in">string</span>, keyValue: <span class="hljs-built_in">string</span>, value: {}</span>) =&gt;</span> <span class="hljs-built_in">Promise</span>&lt;<span class="hljs-built_in">string</span> | Request.result&gt;;
-    <span class="hljs-keyword">get</span>: <span class="hljs-function">(<span class="hljs-params">storeName: <span class="hljs-built_in">string</span>, keyValue: <span class="hljs-built_in">string</span></span>) =&gt;</span> <span class="hljs-built_in">Promise</span>&lt;<span class="hljs-built_in">any</span> | {[keyPath]: <span class="hljs-built_in">string</span> , ...{}} | Request.result&gt;;
+    <span class="hljs-keyword">get</span>: <span class="hljs-function">(<span class="hljs-params">storeName: <span class="hljs-built_in">string</span>, keyValue: <span class="hljs-built_in">string</span></span>) =&gt;</span> <span class="hljs-built_in">Promise</span>&lt;{[keyPath]: <span class="hljs-built_in">string</span> , ...{}} | Request.result&gt;;
+    getAll: <span class="hljs-function">(<span class="hljs-params">storeName: <span class="hljs-built_in">string</span></span>) =&gt;</span> <span class="hljs-built_in">Promise</span>&lt;{}&gt;;
     remove: <span class="hljs-function">(<span class="hljs-params">storeName: <span class="hljs-built_in">string</span>, keyValue: <span class="hljs-built_in">string</span></span>) =&gt;</span> <span class="hljs-built_in">Promise</span>&lt;<span class="hljs-built_in">void</span> | Request.result&gt;;
 }
 </code></pre>
@@ -119,20 +120,18 @@
     *
     **/</span>
 
-    <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'calling open'</span>);
     <span class="hljs-keyword">const</span> stores = <span class="hljs-keyword">await</span> openIDBUtilities({
         version: <span class="hljs-number">1</span>, <span class="hljs-comment">// Numbers should be a positive Number and not contain any decimal digits.</span>
         dbName: <span class="hljs-string">'DemoIDB-1'</span>,
         storeNames: [<span class="hljs-string">'demoStore0'</span>, <span class="hljs-string">'demoStore1'</span>], <span class="hljs-comment">// Provide and array of the storeNames in which you wish to store values in.</span>
         keyPath: <span class="hljs-string">'myKey'</span> <span class="hljs-comment">// keyPath is optional, if provided this will be how you get selective values from the stores and must be a property in your object value you wish to store. If omitted the stores will be indexed 0 to (n-1);</span>
     });
-    <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'stores'</span>, stores);
+
     <span class="hljs-comment">/**
     *     add(storeName: string, value: any) =&gt; Promise&lt;string | {}&gt;;
     *     returns a string with the saved value's key or Request.Result Object.
     *     Note: You cannot add new values to objects with keys that already exsist, use put() or update().
     */</span>
-    <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'calling add'</span>);
     <span class="hljs-keyword">const</span> addResponse = <span class="hljs-keyword">await</span> stores.add(
     <span class="hljs-string">'demoStore0'</span>,
     {
@@ -140,23 +139,19 @@
         value: [{ bat: <span class="hljs-string">'squeak'</span>}, {bear: <span class="hljs-string">'grrr'</span>}]
     })
         .catch(<span class="hljs-function"><span class="hljs-params">err</span> =&gt;</span> <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'Add Error'</span>, err));
-    <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'add response'</span>, addResponse); <span class="hljs-comment">// add response foo</span>
 
     <span class="hljs-comment">/**
     *  get(storeName: string, key: string) =&gt; Promise&lt;any&gt;;
     *  returns the value stored that matches the value stored in [keyPath]: String
     *  or throws an Request.Result Object
     */</span>
-    <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'calling get'</span>);
     <span class="hljs-keyword">let</span> getResponse = <span class="hljs-keyword">await</span> stores.get(<span class="hljs-string">'demoStore0'</span>, <span class="hljs-string">'foo'</span>);
-    <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'get response'</span>, getResponse); <span class="hljs-comment">// get response {myKey:'foo', value: [{ bat: 'squeak'}, {bear: 'grrr'}]}</span>
 
     <span class="hljs-comment">/**
     *  put(storeName: string, value: any) =&gt; Promise&lt;string | {}&gt;;
     *  returns a string with the saved value's key or throws Request.Result Object.
     *  Note: This will overwrite your value saved related your key.
     */</span>
-    <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'calling put'</span>);
     <span class="hljs-keyword">const</span> putResponse = <span class="hljs-keyword">await</span> stores.put(
     <span class="hljs-string">'demoStore0'</span>,
     {
@@ -164,17 +159,13 @@
         value: [{ cat: <span class="hljs-string">'meow'</span>}]
     });
 
-    <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'put response'</span>, putResponse); <span class="hljs-comment">// put response foo</span>
-    getResponse = <span class="hljs-keyword">await</span> stores.get(<span class="hljs-string">'demoStore0'</span>, <span class="hljs-string">'foo'</span>);
-    <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'get response'</span>, getResponse); <span class="hljs-comment">// {myKey:'foo', value: [{cat: 'meow'}]}</span>
 
     <span class="hljs-comment">/**
     *  update(storeName: string, key: string, value: any) =&gt; Promise&lt;string | {}&gt;;
     *  returns a string with the updated value's key or throws an Request.Result Object.
     *  Note: This will merge with your stored value, if it is an array it will concatenate
     *  the new values.
-    */</span>
-    <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'calling update'</span>);
+    */</span>    
     <span class="hljs-keyword">const</span> updateResponse = <span class="hljs-keyword">await</span> stores.update(
     <span class="hljs-string">'demoStore0'</span>,
     <span class="hljs-string">'foo'</span>,
@@ -182,23 +173,26 @@
         myKey: <span class="hljs-string">'foo'</span>,
         value: [{ bat: <span class="hljs-string">'squeak'</span>}, {bear: <span class="hljs-string">'grrr'</span>, dog: [<span class="hljs-string">'woof'</span>, <span class="hljs-string">'bark'</span>]}, {cat: <span class="hljs-string">'purr'</span>}, [<span class="hljs-string">'happy hacking!'</span>]]
     });
-    <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'update response'</span>, updateResponse); <span class="hljs-comment">// update response foo</span>
-    getResponse = <span class="hljs-keyword">await</span> stores.get(<span class="hljs-string">'demoStore0'</span>, <span class="hljs-string">'foo'</span>);
-    <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'get response'</span>, getResponse); <span class="hljs-comment">// get response {myKey:'foo', value: [{cat: 'meow'}, { bat: 'squeak'}, {bear: 'grrr', dog: ['woof', 'bark']}, {cat: 'purr'}, ['happy hacking!']]}</span>
+
+    <span class="hljs-comment">/**
+    * getAll (storeName: string) =&gt; Promise&lt;{}&gt;
+    * Returns all values in the store.
+    */</span>
+    <span class="hljs-keyword">for</span> (<span class="hljs-keyword">let</span> i = <span class="hljs-number">0</span>; i &lt; <span class="hljs-number">10</span>; i++) {
+        <span class="hljs-keyword">await</span> stores.put(<span class="hljs-string">'demoStore0'</span>, {
+            myKey: i.toString(),
+            value: i
+        })
+    }
+    <span class="hljs-keyword">const</span> getAllResponse = <span class="hljs-keyword">await</span> stores.getAll(<span class="hljs-string">'demoStore0'</span>);
 
     <span class="hljs-comment">/**
     *  remove(storeName: string, key: string) =&gt; Promise&lt;any&gt;;
     *  returns void or throws an Request.Result Object
     */</span>
-    <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'calling remove'</span>);
     <span class="hljs-keyword">const</span> removeResponse = <span class="hljs-keyword">await</span> stores.remove(<span class="hljs-string">'demoStore0'</span>, <span class="hljs-string">'foo'</span>)
-        .catch(<span class="hljs-function"><span class="hljs-params">err</span> =&gt;</span> <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'remove error'</span>, err));
-    <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'removeResponse'</span>, removeResponse); <span class="hljs-comment">// removeResponse undefined</span>
+        .catch(<span class="hljs-function"><span class="hljs-params">err</span> =&gt;</span> <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'remove error'</span>, err)); <span class="hljs-comment">// removeResponse undefined</span>
 }
-<span class="hljs-built_in">console</span>.log(<span class="hljs-string">'calling demo'</span>);
-demo()
-    .then(<span class="hljs-function"><span class="hljs-params">res</span> =&gt;</span> <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'response'</span>, res))
-    .catch(<span class="hljs-function"><span class="hljs-params">err</span> =&gt;</span> <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'Error: '</span>, err));
 </code></pre>
 				<h2 id="es6">ES6</h2>
 				<p>example</p>

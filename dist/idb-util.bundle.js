@@ -80,6 +80,14 @@ window.openIDBUtilities = __WEBPACK_IMPORTED_MODULE_0__utilities_index_db_utilit
 
 "use strict";
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return openIDBUtilities; });
+var __assign = (this && this.__assign) || Object.assign || function(t) {
+    for (var s, i = 1, n = arguments.length; i < n; i++) {
+        s = arguments[i];
+        for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+            t[p] = s[p];
+    }
+    return t;
+};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     return new (P || (P = Promise))(function (resolve, reject) {
         function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
@@ -248,12 +256,51 @@ var openIDB = function (config) { return __awaiter(_this, void 0, void 0, functi
                                         })];
                                 });
                             });
+                        },
+                        getAll: function (storeName) {
+                            return __awaiter(this, void 0, void 0, function () {
+                                var response;
+                                return __generator(this, function (_a) {
+                                    response = {};
+                                    return [2 /*return*/, new Promise(function (res, rej) {
+                                            var cursor = db.transaction([storeName])
+                                                .objectStore(storeName)
+                                                .openCursor();
+                                            cursor.onsuccess = function (event) {
+                                                var cursor = event.target.result;
+                                                if (cursor) {
+                                                    response = __assign({}, response, (_a = {}, _a[cursor.key] = cursor.value, _a));
+                                                    cursor.continue();
+                                                }
+                                                else {
+                                                    res(response);
+                                                }
+                                                var _a;
+                                            };
+                                            cursor.onerror = function () {
+                                                rej(request.result);
+                                            };
+                                        })];
+                                });
+                            });
                         }
                     });
                 };
             })];
     });
 }); };
+// var objectStore = db.transaction("customers").objectStore("customers");
+//
+// objectStore.openCursor().onsuccess = function(event) {
+// 	var cursor = event.target.result;
+// 	if (cursor) {
+// 		alert("Name for SSN " + cursor.key + " is " + cursor.value.name);
+// 		cursor.continue();
+// 	}
+// 	else {
+// 		alert("No more entries!");
+// 	}
+// };
 // https://stackoverflow.com/a/48275932/7473184
 function mergeDeep(target, source) {
     if (typeof target === "object" && typeof source === "object") {
